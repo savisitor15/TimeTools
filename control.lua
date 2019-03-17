@@ -1,5 +1,5 @@
 -- debug_status = 1
-debug_mod_name = "TimeTools"
+debug_mod_name = "TimeToolsContinued"
 debug_file = debug_mod_name .. "-debug.txt"
 require("utils")
 require("config")

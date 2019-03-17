@@ -18,14 +18,14 @@ data:extend(
 		{
 			type = "sprite",
 			name = "sprite_timetools_alwday",
-			filename = "__TimeTools__/graphics/but-alwday.png",
+			filename = "__TimeToolsContinued__/graphics/but-alwday.png",
 			width = 22,
 			height = 30,
 		},
 		{
 			type = "sprite",
 			name = "sprite_timetools_night",
-			filename = "__TimeTools__/graphics/but-night.png",
+			filename = "__TimeToolsContinued__/graphics/but-night.png",
 			width = 22,
 			height = 30,
 		},
