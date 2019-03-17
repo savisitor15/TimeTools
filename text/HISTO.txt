@@ -1,0 +1,34 @@
+##NOTES:
+Adds a tiny time toolbar at the top of the UI, that displays an ingame clock, allows to switch from night-and-day mode to continuous daylight and to tweak game speed. Also adds a Clock Combinator item to have access to time/daylight/luminosity variables through the logistic network.
+
+##VERSIONS:
+1.0.29	- correction : surface.freeze_daytime is now a boolean...
+1.0.28	- factorio 0.15 compatible
+1.0.27	- adds an "always_day_enabled" option.
+1.0.26	- factorio 0.14 compatible
+1.0.25	- better init forces when installing on existing game.
+1.0.24	- when always_day, display an approximation of hour/minute, using game.tick
+1.0.23	- change right arrow position to avoid missclick when goinf from x8 to x16 and reverse
+1.0.22	- problem with day icon not correctly initialised in MP, and also time color.
+1.0.21	- corrects a migration version compare mistake
+1.0.20	- interface allows enable/disable display of clock. 
+	/c remote.call( "timetools", "on" )
+	/c remote.call( "timetools", "off" )
+1.0.19	- correct pb of bad alwaysday icon init on brand new map.
+1.0.18	- better init of global.day when load existing map
+1.0.17	- simplify gui, integrate sprite buttons
+1.0.16	- add some migrations (destroy and rebuild bar before 1.0.16), and event player_join
+1.0.15	- normalize code to new binbinhfr basic structure, and fix a campaign incompatibility.
+1.0.14	- minor fixes
+1.0.13	- (coming next...) clock combinator fix.
+1.0.12	- 0.13 compatible (combinator does not work for the moment). rework of initialisation routines. Custom license. New way to approximate day in alwaysday mode.
+1.0.11	- Improved gui refresh. Reduced size in the top bar.
+1.0.9	- Update always_day if changed by another mod. Add interface frozen.
+1.0.7	- No more limitation for the clock combinator to be in a logistic network. Can be placed and works everywhere.
+1.0.6	- Memorize last speed for quick speed switching. Release stress on Combinator Clock refresh.
+1.0.5	- Improves multiplayer compatibility when config changes.
+1.0.4	- Improves multiplayer compatibility. Add a reset to the interface.
+1.0.3	- Change remote interface to set current day and current clock separately.
+1.0.2	- Adds locale for german (thanks to Apcnc) and french (my own language).
+1.0.1	- Introduces Clock Combinator and time freeze, new buttons. Adds multiplayer compatibility.
+1.0.0	- Initial release with a simple Time Bar.

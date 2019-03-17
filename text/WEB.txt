@@ -1,0 +1,58 @@
+[b][size=150]Infos[/size][/b]
+[list]
+[*]Type: Mod
+[*]Name: TimeTools
+[*]Description: Adds a tiny time toolbar at the top of the UI, that displays an ingame clock, allows to switch from night-and-day mode to continuous daylight and to tweak game speed. Also adds a Clock Combinator item to have access to time/daylight/luminosity variables through the logistic network.
+[*]Tested-With-Factorio-Version: 0.13.0
+[*]Multiplayer compatible: tested on a headless server...
+[*]Locale: english, french, german
+[*]Tags: Time, Daylight, Game speed, Clock combinator
+[*]License: You are free to use and distribute this mod and also to modify it for personal use, but not to release a modified version without permission (unless visibly not maintained anymore).
+[*]Portal download : https://mods.factorio.com/mods/binbinhfr/TimeTools[/list]
+[attachment=2]timetools-screencopy7.jpg[/attachment]
+[spoiler=Description][b][size=150]Description[/size][/b]
+The time button on the left displays the current ingame day and time (dd-hh:mm). Note that it is different from your playing time in real seconds (as a mod like [url=https://forums.factorio.com/viewtopic.php?f=92&t=13837]EVO-GUI[/url] can display it). It is the time corresponding to the ingame days and night cycle.
+
+If you click on the time button, it pauses the time (but not the game) and the time becomes red. Click again to resume ; the time becomes green again
+[attachment=7]timetools-screencopy1.jpg[/attachment]
+If you click on the second button, it switches between classical night/day mode and continuous daylight (where time is frozen at 12:00).
+[attachment=4]timetools-screencopy4.jpg[/attachment]
+With the three last buttons, you can tweak the game speed :
+- click on "<" or ">" to decrease or increase game speed from /8 to x64.
+- click on the game speed button to directly revert to x1 normal speed, or to switch instant to last memorized speed if you are already in normal speed.
+[attachment=6]timetools-screencopy2.jpg[/attachment]
+[attachment=5]timetools-screencopy3.jpg[/attachment]
+If you did researched the Circuit Network technology, you now have access to a Clock Combinator item that provides an access to several variables/signals :
+[list]
+[*]current game tick (from the beginning of the game)
+[*]current day
+[*]current hour
+[*]current minute
+[*]always day status (0: night&day, 1: always daylight)
+[*]current darkness (from 0 to 100%)
+[*]current lightness (from 0 to 100%), inverse of darkness.[/list]
+[attachment=3]timetools-screencopy5.jpg[/attachment]
+If you want to change the clock settings, you can use the remote interface from the console :
+/c remote.call( "timetools", "setclock", hour.minute )  ex: /c remote.call( "timetools", "setclock", 9.27 ) to set at 09:27am
+
+you can also enable/disable the time display (if you want to keep only the combinator part), using
+/c remote.call( "timetools", "off" )
+and
+/c remote.call( "timetools", "on" )
+
+You can also edit the config.lua file if you want to lower the maximum speed, or change the clock refresh rate.[/spoiler]
+
+[b][size=150]Download[/size][/b]
+For Factorio 0.13.X :
+[color=#00BF80]Please now use the portal for downloads (see link above or use ingame mod install/update), as I won't update both downloads links here anymore.[/color]
+
+For Factorio 0.12.X :
+[attachment=0]TimeTools_1.0.11.zip[/attachment]
+[attachment=1]TimeTools_1.0.9.zip[/attachment]
+
+
+You can probably find some of these features in other separate mods, but I gather them into one simple mod with a tiny gui bar.
+
+Thanks for GopherAtl and his [url=https://forums.factorio.com/viewtopic.php?f=93&t=14671]Nixie Tubes[/url] mod that I use to display numbers in my last screenshot.
+
+The classic display of the first screenshot is from my [url=https://forums.factorio.com/viewtopic.php?f=93&t=24720]SmartDisplay[/url] mod.
