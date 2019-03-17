@@ -2,6 +2,7 @@
 Adds a tiny time toolbar at the top of the UI, that displays an ingame clock, allows to switch from night-and-day mode to continuous daylight and to tweak game speed. Also adds a Clock Combinator item to have access to time/daylight/luminosity variables through the logistic network.
 
 ##VERSIONS:
+1.0.32  - factorio 0.17 compatible
 1.0.29	- correction : surface.freeze_daytime is now a boolean...
 1.0.28	- factorio 0.15 compatible
 1.0.27	- adds an "always_day_enabled" option.

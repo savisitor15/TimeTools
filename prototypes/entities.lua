@@ -55,37 +55,73 @@ data:extend(
     activity_led_sprites =
     {
       north =
+    {
+      filename = "__base__/graphics/entity/combinator/activity-leds/constant-combinator-LED-N.png",
+      width = 8,
+      height = 6,
+      frame_count = 1,
+      shift = util.by_pixel(9, -12),
+      hr_version =
       {
-        filename = "__base__/graphics/entity/combinator/activity-leds/constant-combinator-LED-N.png",
-        width = 11,
-        height = 10,
-        frame_count = 1,
-        shift = {0.296875, -0.40625},
-      },
-      east =
-      {
-        filename = "__base__/graphics/entity/combinator/activity-leds/constant-combinator-LED-E.png",
+        scale = 0.5,
+        filename = "__base__/graphics/entity/combinator/activity-leds/hr-constant-combinator-LED-N.png",
         width = 14,
         height = 12,
         frame_count = 1,
-        shift = {0.25, -0.03125},
-      },
-      south =
-      {
-        filename = "__base__/graphics/entity/combinator/activity-leds/constant-combinator-LED-S.png",
-        width = 11,
-        height = 11,
-        frame_count = 1,
-        shift = {-0.296875, -0.078125},
-      },
-      west =
-      {
-        filename = "__base__/graphics/entity/combinator/activity-leds/constant-combinator-LED-W.png",
-        width = 12,
-        height = 12,
-        frame_count = 1,
-        shift = {-0.21875, -0.46875},
+        shift = util.by_pixel(9, -11.5)
       }
+    },
+    east =
+    {
+      filename = "__base__/graphics/entity/combinator/activity-leds/constant-combinator-LED-E.png",
+      width = 8,
+      height = 8,
+      frame_count = 1,
+      shift = util.by_pixel(8, 0),
+      hr_version =
+      {
+        scale = 0.5,
+        filename = "__base__/graphics/entity/combinator/activity-leds/hr-constant-combinator-LED-E.png",
+        width = 14,
+        height = 14,
+        frame_count = 1,
+        shift = util.by_pixel(7.5, -0.5)
+      }
+    },
+    south =
+    {
+      filename = "__base__/graphics/entity/combinator/activity-leds/constant-combinator-LED-S.png",
+      width = 8,
+      height = 8,
+      frame_count = 1,
+      shift = util.by_pixel(-9, 2),
+      hr_version =
+      {
+        scale = 0.5,
+        filename = "__base__/graphics/entity/combinator/activity-leds/hr-constant-combinator-LED-S.png",
+        width = 14,
+        height = 16,
+        frame_count = 1,
+        shift = util.by_pixel(-9, 2.5)
+      }
+    },
+    west =
+    {
+      filename = "__base__/graphics/entity/combinator/activity-leds/constant-combinator-LED-W.png",
+      width = 8,
+      height = 8,
+      frame_count = 1,
+      shift = util.by_pixel(-7, -15),
+      hr_version =
+      {
+        scale = 0.5,
+        filename = "__base__/graphics/entity/combinator/activity-leds/hr-constant-combinator-LED-W.png",
+        width = 14,
+        height = 16,
+        frame_count = 1,
+        shift = util.by_pixel(-7, -15)
+      }
+    }
     },
 	
     activity_led_light =

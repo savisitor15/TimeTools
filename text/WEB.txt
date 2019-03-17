@@ -43,13 +43,8 @@ and
 You can also edit the config.lua file if you want to lower the maximum speed, or change the clock refresh rate.[/spoiler]
 
 [b][size=150]Download[/size][/b]
-For Factorio 0.13.X :
+For Factorio 0.17.X :
 [color=#00BF80]Please now use the portal for downloads (see link above or use ingame mod install/update), as I won't update both downloads links here anymore.[/color]
-
-For Factorio 0.12.X :
-[attachment=0]TimeTools_1.0.11.zip[/attachment]
-[attachment=1]TimeTools_1.0.9.zip[/attachment]
-
 
 You can probably find some of these features in other separate mods, but I gather them into one simple mod with a tiny gui bar.
 

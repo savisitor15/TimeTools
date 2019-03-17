@@ -6,7 +6,7 @@ data:extend(
 		name = "clock-combinator",
 		icon = "__TimeTools__/graphics/clock-combinator-icon.png",
 		icon_size = 32,
-		flags = { "goes-to-quickbar" },
+		flags = { },
 		subgroup = "circuit-network",
 		place_result="clock-combinator",
 		order = "b[combinators]-d[clock-combinator]",
