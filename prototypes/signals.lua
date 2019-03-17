@@ -10,7 +10,7 @@ data:extend(
 	{
 		type = "virtual-signal",
 		name = "signal-clock-gametick",
-		icon = "__TimeToolsContinued__/graphics/signal-clock-gametick.png",
+		icon = "__TimeTools__/graphics/signal-clock-gametick.png",
 		icon_size = 32,
 		subgroup = "virtual-signal-clock",
 		order = "y[clock]-a"
@@ -18,7 +18,7 @@ data:extend(
 	{
 		type = "virtual-signal",
 		name = "signal-clock-day",
-		icon = "__TimeToolsContinued__/graphics/signal-clock-day.png",
+		icon = "__TimeTools__/graphics/signal-clock-day.png",
 		icon_size = 32,
 		subgroup = "virtual-signal-clock",
 		order = "y[clock]-d"
@@ -26,7 +26,7 @@ data:extend(
 	{
 		type = "virtual-signal",
 		name = "signal-clock-hour",
-		icon = "__TimeToolsContinued__/graphics/signal-clock-hour.png",
+		icon = "__TimeTools__/graphics/signal-clock-hour.png",
 		icon_size = 32,
 		subgroup = "virtual-signal-clock",
 		order = "y[clock]-d"
@@ -34,7 +34,7 @@ data:extend(
 	{
 		type = "virtual-signal",
 		name = "signal-clock-minute",
-		icon = "__TimeToolsContinued__/graphics/signal-clock-minute.png",
+		icon = "__TimeTools__/graphics/signal-clock-minute.png",
 		icon_size = 32,
 		subgroup = "virtual-signal-clock",
 		order = "y[clock]-d"
@@ -42,7 +42,7 @@ data:extend(
 	{
 		type = "virtual-signal",
 		name = "signal-clock-alwaysday",
-		icon = "__TimeToolsContinued__/graphics/signal-clock-alwaysday.png",
+		icon = "__TimeTools__/graphics/signal-clock-alwaysday.png",
 		icon_size = 32,
 		subgroup = "virtual-signal-clock",
 		order = "y[clock]-f"
@@ -50,7 +50,7 @@ data:extend(
 	{
 		type = "virtual-signal",
 		name = "signal-clock-lightness",
-		icon = "__TimeToolsContinued__/graphics/signal-clock-lightness.png",
+		icon = "__TimeTools__/graphics/signal-clock-lightness.png",
 		icon_size = 32,
 		subgroup = "virtual-signal-clock",
 		order = "y[clock]-f"
@@ -58,7 +58,7 @@ data:extend(
 	{
 		type = "virtual-signal",
 		name = "signal-clock-darkness",
-		icon = "__TimeToolsContinued__/graphics/signal-clock-darkness.png",
+		icon = "__TimeTools__/graphics/signal-clock-darkness.png",
 		icon_size = 32,
 		subgroup = "virtual-signal-clock",
 		order = "y[clock]-f"

@@ -1,7 +1,7 @@
 {
-	"name": "TimeToolsContinued",
-	"version": "1.0.33",
-	"title": "Time Tools Continued (+game speed +clock combinators)",
+	"name": "TimeTools",
+	"version": "1.0.34",
+	"title": "Time Tools (+game speed +clock combinators)",
 	"author": "BinbinHfr, Savisitor15",
 	"description": "Time tools : clock, daylight, game speed tweaks and clock combinators!",
 	"homepage": "https://forums.factorio.com/viewtopic.php?f=92&t=22822",

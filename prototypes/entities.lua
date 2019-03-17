@@ -4,7 +4,7 @@ data:extend(
 	{
 		type = "constant-combinator",
 		name = "clock-combinator",
-		icon = "__TimeToolsContinued__/graphics/clock-combinator-icon.png",
+		icon = "__TimeTools__/graphics/clock-combinator-icon.png",
 		icon_size = 32,
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {hardness = 0.2, mining_time = 0.5, result = "clock-combinator"},
@@ -20,7 +20,7 @@ data:extend(
 		{
 			north =
 			{
-				filename = "__TimeToolsContinued__/graphics/clock-combinator.png",
+				filename = "__TimeTools__/graphics/clock-combinator.png",
 				x = 61,
 				width = 61,
 				height = 50,
@@ -28,7 +28,7 @@ data:extend(
 			},
 			east =
 			{
-				filename = "__TimeToolsContinued__/graphics/clock-combinator.png",
+				filename = "__TimeTools__/graphics/clock-combinator.png",
 				x = 61,
 				width = 61,
 				height = 50,
@@ -36,7 +36,7 @@ data:extend(
 			},
 			south =
 			{
-				filename = "__TimeToolsContinued__/graphics/clock-combinator.png",
+				filename = "__TimeTools__/graphics/clock-combinator.png",
 				x = 61,
 				width = 61,
 				height = 50,
@@ -44,7 +44,7 @@ data:extend(
 			},
 			west =
 			{
-				filename = "__TimeToolsContinued__/graphics/clock-combinator.png",
+				filename = "__TimeTools__/graphics/clock-combinator.png",
 				x = 61,
 				width = 61,
 				height = 50,

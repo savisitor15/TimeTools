@@ -4,7 +4,7 @@ data:extend(
 	{
 		type = "item",
 		name = "clock-combinator",
-		icon = "__TimeToolsContinued__/graphics/clock-combinator-icon.png",
+		icon = "__TimeTools__/graphics/clock-combinator-icon.png",
 		icon_size = 32,
 		flags = { },
 		subgroup = "circuit-network",
