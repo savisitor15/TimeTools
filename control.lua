@@ -129,23 +129,14 @@ local function on_configuration_changed(data)
 			for _, player in pairs(game.players) do
 				if player.gui.top.timebar_frame then player.gui.top.timebar_frame.destroy() end -- destroy old bar
 			end
-			
-			if changes.old_version ~= nil and older_version(changes.old_version, "1.0.17") then
-				for _, player in pairs(game.players) do
-					if player.gui.top.timetools_frame then player.gui.top.timetools_frame.destroy() end -- destroy old bar
-				end
-			end
-
 			if changes.old_version ~= nil and older_version(changes.old_version, "1.0.18") then
 				init_day()
 			end
-
-			if changes.old_version ~= nil and older_version(changes.old_version, "1.0.23") then
+			if changes.old_version ~= nil and older_version(changes.old_version, "1.0.34") then
 				for _, player in pairs(game.players) do
 					if player.gui.top.timetools_flow then player.gui.top.timetools_flow.destroy() end -- rebuild bar
 				end
 			end
-
 			init_players()
 
 			update_guis()			
@@ -328,7 +319,7 @@ function build_gui( player )
 	if gui1 == nil and global.display then
 		debug_print("create frame player" .. player.name)
 		gui1 = player.gui.top.add({type = "flow", name = "timetools_flow", direction = "horizontal", style = "timetools_flow_style"})
-		local gui2 = gui1.add({type = "button", name = "but_time", caption = "0-00:00", font_color = colors.white, style = "timetools_button_style"})				
+		local gui2 = gui1.add({type = "button", name = "but_time", caption = "0-00:00", font_color = colors.white, style = "timetools_botton_time_style"})				
 		if global.frozen then
 			gui2.style.font_color = colors.lightred
 		else

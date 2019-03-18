@@ -38,11 +38,11 @@ default_gui.timetools_sprite_style =
 {
 	type="button_style",
 	parent="button",
-	top_padding = 0,
+	top_padding = 1,
 	right_padding = 0,
 	bottom_padding = 0,
 	left_padding = 0,
-	width = 28,
+	width = 36,
 	height = 36,
 	scalable = false,
 }
@@ -51,10 +51,10 @@ default_gui.timetools_flow_style =
 {
 	type="horizontal_flow_style",
 	parent="horizontal_flow",
-	top_padding = 0,
-	bottom_padding = 0,
-	left_padding = 0,
-	right_padding = 0,
+	top_padding = 5,
+	bottom_padding = 5,
+	left_padding = 5,
+	right_padding = 5,
 	
 	horizontal_spacing = 0,
 	vertical_spacing = 0,
@@ -63,6 +63,27 @@ default_gui.timetools_flow_style =
 	
 	graphical_set = { type = "none" },
 }
+default_gui.timetools_botton_time_style=
+{
+	type="button_style",
+	parent="button",
+	font="timetools_font_bold",
+	align = "center",
+	top_padding = 1,
+	bottom_padding = 0,
+	left_padding = 0,
+	right_padding = 0,
+	height = 36,
+	minimal_width = 72,
+	scalable = false,
+	left_click_sound =
+	{
+		{
+		  filename = "__core__/sound/gui-click.ogg",
+		  volume = 1
+		}
+	},
+}
 
 default_gui.timetools_button_style = 
 {
@@ -70,11 +91,12 @@ default_gui.timetools_button_style =
 	parent="button",
 	font="timetools_font_bold",
 	align = "center",
-	top_padding = 0,
+	top_padding = 1,
 	bottom_padding = 0,
 	left_padding = 0,
 	right_padding = 0,
 	height = 36,
+	minimal_width = 36,
 	scalable = false,
 	left_click_sound =
 	{
