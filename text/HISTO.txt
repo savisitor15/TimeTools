@@ -2,6 +2,7 @@
 Adds a tiny time toolbar at the top of the UI, that displays an ingame clock, allows to switch from night-and-day mode to continuous daylight and to tweak game speed. Also adds a Clock Combinator item to have access to time/daylight/luminosity variables through the logistic network.
 
 ##VERSIONS:
+1.0.35  - moved config to be settings per map instead
 1.0.34  - continuation of original TimeTools
 1.0.33  - fixed naming
 1.0.32  - factorio 0.17 compatible

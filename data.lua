@@ -1,5 +1,4 @@
 require("utils")
-require("config")
 require("prototypes.styles")
 require("prototypes.signals")
 require("prototypes.entities")

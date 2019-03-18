@@ -2,13 +2,13 @@
 debug_mod_name = "TimeToolsContinued"
 debug_file = debug_mod_name .. "-debug.txt"
 require("utils")
-require("config")
+--require("config")
 
 local ticks_per_day = 25000
 
 --------------------------------------------------------------------------------------
 local function init_day()
-	global.day = 1+math.floor((game.tick+12500) / ticks_per_day)
+	global.day = 1 + math.floor((game.tick+(ticks_per_day/2)) / ticks_per_day)
 end
 
 --------------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ local function get_time()
 	end
 		
 	if always_day then
-		daytime = game.tick / 25000
+		daytime = game.tick / ticks_per_day
 		daytime = daytime - math.floor(daytime)
 	else
 		if global.always_day == true then
@@ -37,10 +37,8 @@ local function get_time()
 	daytime = (daytime*24+12) % 24
 	global.h = math.floor(daytime)
 	global.m = math.floor((daytime-global.h)*60)
-		
-	if global.h == 0 and global.h_prev == 23 then
-		global.day = global.day + 1
-	end
+	-- day calculation independant of hour
+	global.day = math.floor((game.tick+(ticks_per_day/2)) / ticks_per_day) + 1
 	
 	global.always_day = always_day
 	global.h_prev = global.h
@@ -62,7 +60,7 @@ local function init_globals()
 	global.always_day = global.always_day or -1 -- -1 to force update of the icon at first install
 	global.refresh_always_day = true
 	
-	if not always_day_enabled then global.surface.always_day = false end
+	if not settings.global["timetools-always-day"].value then global.surface.always_day = false end
 	
 	if global.day == nil then 
 		init_day() 
@@ -73,7 +71,7 @@ local function init_globals()
 	if global.display == nil then global.display = true end
 	global.clocks = global.clocks or {}
 	
-	global.speed_mem = global.speed_mem or maximum_speed
+	global.speed_mem = global.speed_mem or settings.global["timetools-maximum-speed"].value
 end
 
 --------------------------------------------------------------------------------------
@@ -223,9 +221,15 @@ script.on_event(defines.events.on_pre_player_mined_item, on_destruction )
 
 --------------------------------------------------------------------------------------
 local function on_tick(event)
-	if global.ticks <= 0 then
-		global.ticks = clock_cycle_in_ticks
-	elseif global.ticks == 2 then
+	if global.speed_mem > settings.global["timetools-maximum-speed"].value then
+		-- User changed the speed mid acceleration or on the fly
+		global.speed_mem = settings.global["timetools-maximum-speed"].value
+		if  game.speed > global.speed_mem then
+			game.speed = global.speed_mem
+			update_guis()
+		end
+	end
+	if (game.tick % settings.global["timetools-clock-update-interval"].value) == 0 then
 		get_time()
 
 		-- update time display on button
@@ -255,11 +259,8 @@ local function on_tick(event)
 			
 			global.refresh_always_day = false
 		end
-
-	elseif global.ticks == 4 then
-		if global.cycles <= 0 then
-			global.cycles = clock_combinator_cycle
-			-- update clocks variables
+	end
+	if (game.tick % settings.global["timetools-combinator-interval"].value)  == 0 then
 			for i, clock in pairs(global.clocks) do
 				if clock.entity.valid then
 					params = {parameters={
@@ -277,12 +278,7 @@ local function on_tick(event)
 					table.remove(global.clocks,i)
 				end
 			end
-		else
-			global.cycles = global.cycles - 1
-		end
 	end
-	
-	global.ticks = global.ticks - 1
 end
 
 script.on_event(defines.events.on_tick, on_tick)
@@ -297,7 +293,7 @@ local function on_gui_click(event)
 		end
 		
 	elseif event.element.name == "but_always" then
-		if always_day_enabled then
+		if settings.global["timetools-always-day"].value then
 			global.surface.always_day = not global.surface.always_day
 		
 			if global.surface.always_day then
@@ -312,7 +308,7 @@ local function on_gui_click(event)
 		update_guis()
 		
 	elseif event.element.name == "but_faster" then
-		if game.speed < maximum_speed then game.speed = game.speed * 2 end
+		if game.speed < settings.global["timetools-maximum-speed"].value then game.speed = game.speed * 2 end
 		if game.speed ~= 1 then global.speed_mem = game.speed end
 		update_guis()
 
