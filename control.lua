@@ -276,38 +276,42 @@ script.on_event(defines.events.on_tick, on_tick)
 
 --------------------------------------------------------------------------------------
 local function on_gui_click(event)
-	if event.element.name == "but_time" then
-		if not global.surface.always_day then
-			global.frozen = not global.frozen
-		global.surface.freeze_daytime = global.frozen
+	local player = game.players[event.player_index]
+	if player.admin then
+		if event.element.name == "but_time" then
+			if not global.surface.always_day then
+				global.frozen = not global.frozen
+			global.surface.freeze_daytime = global.frozen
+				update_guis()
+			end
+			
+		elseif event.element.name == "but_always" then
+			if settings.global["timetools-always-day"].value then
+				global.surface.always_day = not global.surface.always_day
+			
+				if global.surface.always_day then
+					global.frozen = false
+				end
+			end
+			update_guis()
+			
+		elseif event.element.name == "but_slower" then
+			if game.speed >= 0.2 then game.speed = game.speed / 2 end -- minimum 0.1
+			if game.speed ~= 1 then global.speed_mem = game.speed end
+			update_guis()
+			
+		elseif event.element.name == "but_faster" then
+			if game.speed < settings.global["timetools-maximum-speed"].value then game.speed = game.speed * 2 end
+			if game.speed ~= 1 then global.speed_mem = game.speed end
+			update_guis()
+
+		elseif event.element.name == "but_speed" then
+			if game.speed == 1 then game.speed = global.speed_mem else game.speed = 1 end
 			update_guis()
 		end
-		
-	elseif event.element.name == "but_always" then
-		if settings.global["timetools-always-day"].value then
-			global.surface.always_day = not global.surface.always_day
-		
-			if global.surface.always_day then
-				global.frozen = false
-			end
-		end
-		update_guis()
-		
-	elseif event.element.name == "but_slower" then
-		if game.speed >= 0.2 then game.speed = game.speed / 2 end -- minimum 0.1
-		if game.speed ~= 1 then global.speed_mem = game.speed end
-		update_guis()
-		
-	elseif event.element.name == "but_faster" then
-		if game.speed < settings.global["timetools-maximum-speed"].value then game.speed = game.speed * 2 end
-		if game.speed ~= 1 then global.speed_mem = game.speed end
-		update_guis()
-
-	elseif event.element.name == "but_speed" then
-		if game.speed == 1 then game.speed = global.speed_mem else game.speed = 1 end
-		update_guis()
+	else
+		player.print({"mod-messages.timetools-message-admins-only"})
 	end
-	
 end
 
 script.on_event(defines.events.on_gui_click, on_gui_click )
