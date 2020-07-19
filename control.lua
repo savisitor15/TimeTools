@@ -211,6 +211,11 @@ script.on_event(defines.events.on_robot_pre_mined, on_destruction )
 script.on_event(defines.events.on_pre_player_mined_item, on_destruction )
 
 --------------------------------------------------------------------------------------
+local function format_time()
+	local sTime = ""
+	sTime = string.format("%u-%02u:%02u", global.day, global.h, global.m )
+	return sTime
+
 local function on_tick(event)
 	if global.speed_mem > settings.global["timetools-maximum-speed"].value then
 		-- User changed the speed mid acceleration or on the fly
@@ -226,7 +231,7 @@ local function on_tick(event)
 		-- update time display on button
 		
 		if global.display then
-			local s_time = string.format("%u-%02u:%02u", global.day, global.h, global.m )
+			local s_time = format_time()
 			local flow
 			
 			for _, player in pairs(game.players) do
