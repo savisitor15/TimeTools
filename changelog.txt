@@ -143,3 +143,8 @@ Date: 19. 07. 2020
     - Russian translation done by TheLastEagle
   Changes:
     - Added changelog.txt
+---------------------------------------------------------------------------------------------------
+Version: 1.18.39
+Date: 19. 07. 2020
+  Bugfixes:
+    - Minor issue with new format_time() function
