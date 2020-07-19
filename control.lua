@@ -215,6 +215,7 @@ local function format_time()
 	local sTime = ""
 	sTime = string.format("%u-%02u:%02u", global.day, global.h, global.m )
 	return sTime
+end
 
 local function on_tick(event)
 	if global.speed_mem > settings.global["timetools-maximum-speed"].value then
