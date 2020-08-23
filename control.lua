@@ -211,6 +211,12 @@ script.on_event(defines.events.on_robot_pre_mined, on_destruction )
 script.on_event(defines.events.on_pre_player_mined_item, on_destruction )
 
 --------------------------------------------------------------------------------------
+local function format_time()
+	local sTime = ""
+	sTime = string.format("%u-%02u:%02u", global.day, global.h, global.m )
+	return sTime
+end
+
 local function on_tick(event)
 	if global.speed_mem > settings.global["timetools-maximum-speed"].value then
 		-- User changed the speed mid acceleration or on the fly
@@ -226,24 +232,24 @@ local function on_tick(event)
 		-- update time display on button
 		
 		if global.display then
-			local s_time = string.format("%u-%02u:%02u", global.day, global.h, global.m )
+			local s_time = format_time()
 			local flow
 			
 			for _, player in pairs(game.players) do
 				if player.connected and player.gui.top.timetools_flow then
 					flow = player.gui.top.timetools_flow
-					flow.but_time.caption = s_time
+					flow.timetools_but_time.caption = s_time
 					
 					if global.refresh_always_day then
 						if global.surface.always_day then
-							flow.but_always.sprite = "sprite_timetools_alwday"
+							flow.timetools_but_always.sprite = "sprite_timetools_alwday"
 						else
-							flow.but_always.sprite = "sprite_timetools_night"
+							flow.timetools_but_always.sprite = "sprite_timetools_night"
 						end
 					end
 					
 					if debug_status then
-						flow.but_tick.caption = game.tick
+						flow.timetools_but_tick.caption = game.tick
 					end
 				end
 			end
@@ -276,38 +282,46 @@ script.on_event(defines.events.on_tick, on_tick)
 
 --------------------------------------------------------------------------------------
 local function on_gui_click(event)
-	if event.element.name == "but_time" then
-		if not global.surface.always_day then
-			global.frozen = not global.frozen
-		global.surface.freeze_daytime = global.frozen
+	local player = game.players[event.player_index]
+	if string.match(event.element.name, "timetools_") == nil then
+		-- not for us
+		return
+	end
+	if player.admin then
+		if event.element.name == "timetools_but_time" then
+			if not global.surface.always_day then
+				global.frozen = not global.frozen
+			global.surface.freeze_daytime = global.frozen
+				update_guis()
+			end
+			
+		elseif event.element.name == "timetools_but_always" then
+			if settings.global["timetools-always-day"].value then
+				global.surface.always_day = not global.surface.always_day
+			
+				if global.surface.always_day then
+					global.frozen = false
+				end
+			end
+			update_guis()
+			
+		elseif event.element.name == "timetools_but_slower" then
+			if game.speed >= 0.2 then game.speed = game.speed / 2 end -- minimum 0.1
+			if game.speed ~= 1 then global.speed_mem = game.speed end
+			update_guis()
+			
+		elseif event.element.name == "timetools_but_faster" then
+			if game.speed < settings.global["timetools-maximum-speed"].value then game.speed = game.speed * 2 end
+			if game.speed ~= 1 then global.speed_mem = game.speed end
+			update_guis()
+
+		elseif event.element.name == "timetools_but_speed" then
+			if game.speed == 1 then game.speed = global.speed_mem else game.speed = 1 end
 			update_guis()
 		end
-		
-	elseif event.element.name == "but_always" then
-		if settings.global["timetools-always-day"].value then
-			global.surface.always_day = not global.surface.always_day
-		
-			if global.surface.always_day then
-				global.frozen = false
-			end
-		end
-		update_guis()
-		
-	elseif event.element.name == "but_slower" then
-		if game.speed >= 0.2 then game.speed = game.speed / 2 end -- minimum 0.1
-		if game.speed ~= 1 then global.speed_mem = game.speed end
-		update_guis()
-		
-	elseif event.element.name == "but_faster" then
-		if game.speed < settings.global["timetools-maximum-speed"].value then game.speed = game.speed * 2 end
-		if game.speed ~= 1 then global.speed_mem = game.speed end
-		update_guis()
-
-	elseif event.element.name == "but_speed" then
-		if game.speed == 1 then game.speed = global.speed_mem else game.speed = 1 end
-		update_guis()
+	else
+		player.print({"mod-messages.timetools-message-admins-only"})
 	end
-	
 end
 
 script.on_event(defines.events.on_gui_click, on_gui_click )
@@ -319,23 +333,23 @@ function build_gui( player )
 	if gui1 == nil and global.display then
 		debug_print("create frame player" .. player.name)
 		gui1 = player.gui.top.add({type = "flow", name = "timetools_flow", direction = "horizontal", style = "timetools_flow_style"})
-		local gui2 = gui1.add({type = "button", name = "but_time", caption = "0-00:00", font_color = colors.white, style = "timetools_botton_time_style"})				
+		local gui2 = gui1.add({type = "button", name = "timetools_but_time", caption = "0-00:00", font_color = colors.white, style = "timetools_botton_time_style"})				
 		if global.frozen then
 			gui2.style.font_color = colors.lightred
 		else
 			gui2.style.font_color = colors.green
 		end
-		gui2 = gui1.add({type = "sprite-button", name = "but_always", style = "timetools_sprite_style"})
+		gui2 = gui1.add({type = "sprite-button", name = "timetools_but_always", style = "timetools_sprite_style"})
 		if global.surface.always_day then
 			gui2.sprite = "sprite_timetools_alwday"
 		else
 			gui2.sprite = "sprite_timetools_night"
 		end
-		gui1.add({type = "button", name = "but_slower", caption = "<" , font_color = colors.white, style = "timetools_button_style"})
-		gui1.add({type = "button", name = "but_faster", caption = ">" , font_color = colors.white, style = "timetools_button_style"})
-		gui1.add({type = "button", name = "but_speed", caption = "x1" , font_color = colors.white, style = "timetools_button_style"})
+		gui1.add({type = "button", name = "timetools_but_slower", caption = "<" , font_color = colors.white, style = "timetools_button_style"})
+		gui1.add({type = "button", name = "timetools_but_faster", caption = ">" , font_color = colors.white, style = "timetools_button_style"})
+		gui1.add({type = "button", name = "timetools_but_speed", caption = "x1" , font_color = colors.white, style = "timetools_button_style"})
 		if debug_status then
-			gui1.add({type = "button", name = "but_tick", caption = "0" , font_color = colors.white, style = "timetools_button_style"})
+			gui1.add({type = "button", name = "timetools_but_tick", caption = "0" , font_color = colors.white, style = "timetools_button_style"})
 		end
 	end
 	return( gui1 )
@@ -350,28 +364,28 @@ function update_guis()
 				local s
 				
 				if game.speed == 1 then
-					flow.but_speed.caption = "x1"
-					flow.but_speed.style.font_color = colors.white
+					flow.timetools_but_speed.caption = "x1"
+					flow.timetools_but_speed.style.font_color = colors.white
 				elseif game.speed < 1 then
 					s = string.format("/%1.0f", 1/game.speed )
-					flow.but_speed.caption = s
-					flow.but_speed.style.font_color = colors.green
+					flow.timetools_but_speed.caption = s
+					flow.timetools_but_speed.style.font_color = colors.green
 				elseif game.speed > 1 then
 					s = string.format("x%1.0f", game.speed )
-					flow.but_speed.caption = s
-					flow.but_speed.style.font_color = colors.lightred
+					flow.timetools_but_speed.caption = s
+					flow.timetools_but_speed.style.font_color = colors.lightred
 				end
 		
 				if global.surface.always_day then
-					flow.but_always.sprite = "sprite_timetools_alwday"
+					flow.timetools_but_always.sprite = "sprite_timetools_alwday"
 				else
-					flow.but_always.sprite = "sprite_timetools_night"
+					flow.timetools_but_always.sprite = "sprite_timetools_night"
 				end
 
 				if global.frozen then
-					flow.but_time.style.font_color = colors.lightred
+					flow.timetools_but_time.style.font_color = colors.lightred
 				else
-					flow.but_time.style.font_color = colors.green
+					flow.timetools_but_time.style.font_color = colors.green
 				end
 			end
 		end	
