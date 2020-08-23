@@ -65,6 +65,7 @@ lightcolors = {
 
 local author_name1 = "BinbinHfr"
 local author_name2 = "binbin"
+local author_name3 = "savisitor15"
 
 --------------------------------------------------------------------------------------
 function read_version(v)
@@ -285,7 +286,7 @@ end
 
 ------------------------------------------------------------------------------------
 function is_dev(player)
-	return( player.name == author_name1 or player.name == author_name2 )
+	return( player.name == author_name1 or player.name == author_name2  or string.upper(player.name) == string.upper(author_name3))
 end
 
 --------------------------------------------------------------------------------------

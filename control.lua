@@ -1,5 +1,5 @@
 -- debug_status = 1
-debug_mod_name = "TimeToolsContinued"
+debug_mod_name = "TimeTools"
 debug_file = debug_mod_name .. "-debug.txt"
 require("utils")
 --require("config")
@@ -137,6 +137,11 @@ local function on_configuration_changed(data)
 					if player.gui.top.timetools_flow then player.gui.top.timetools_flow.destroy() end -- rebuild bar
 				end
 			end
+			if changes.old_version ~= nil and older_version(changes.old_version, "2.0.41") then
+				for _, player in pairs(game.players) do
+					if player.gui.top.timetools_flow then player.gui.top.timetools_flow.destroy() end -- rebuild bar
+				end
+			end
 			init_players()
 
 			update_guis()			
@@ -238,6 +243,12 @@ local function on_tick(event)
 			for _, player in pairs(game.players) do
 				if player.connected and player.gui.top.timetools_flow then
 					flow = player.gui.top.timetools_flow
+					if flow.timetools_but_time == nil then
+						flow.destroy()
+						init_player(player)
+						update_guis()
+						flow = player.gui.top.timetools_flow -- re-assign
+					end
 					flow.timetools_but_time.caption = s_time
 					
 					if global.refresh_always_day then
