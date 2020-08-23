@@ -148,3 +148,9 @@ Version: 1.18.39
 Date: 19. 07. 2020
   Bugfixes:
     - Minor issue with new format_time() function
+---------------------------------------------------------------------------------------------------
+Version: 2.0.40
+Date: 23. 08. 2020
+  Changes:
+    - Unified the branches
+	- Fixed bug where admin check was launched for buttons it shouldn't
