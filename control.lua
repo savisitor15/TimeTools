@@ -1,4 +1,4 @@
--- debug_status = 1
+--debug_status = 1
 debug_mod_name = "TimeTools"
 debug_file = debug_mod_name .. "-debug.txt"
 require("utils")
@@ -260,6 +260,12 @@ local function on_tick(event)
 					end
 					
 					if debug_status then
+						if flow.timetools_but_tick == nil then
+							flow.destroy()
+							init_player(player)
+							update_guis()
+							flow = player.gui.top.timetools_flow -- re-assign
+						end
 						flow.timetools_but_tick.caption = game.tick
 					end
 				end
@@ -271,7 +277,7 @@ local function on_tick(event)
 	if (game.tick % settings.global["timetools-combinator-interval"].value)  == 0 then
 			for i, clock in pairs(global.clocks) do
 				if clock.entity.valid then
-					params = {parameters={
+					params = {
 						{index=1,signal={type="virtual",name="signal-clock-gametick"},count=math.floor(game.tick)},
 						{index=2,signal={type="virtual",name="signal-clock-day"},count=global.day},
 						{index=3,signal={type="virtual",name="signal-clock-hour"},count=global.h},
@@ -279,7 +285,7 @@ local function on_tick(event)
 						{index=5,signal={type="virtual",name="signal-clock-alwaysday"},count=iif(global.surface.always_day,1,0)},
 						{index=6,signal={type="virtual",name="signal-clock-darkness"},count=math.floor(global.surface.darkness*100)},
 						{index=7,signal={type="virtual",name="signal-clock-lightness"},count=math.floor((1-global.surface.darkness)*100)},
-					}}
+					}
 					
 					clock.entity.get_control_behavior().parameters = params
 				else
