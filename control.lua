@@ -17,7 +17,7 @@ local function get_time()
 	-- game starts at daytime = 0, so noon of day 1.
 		
 	local daytime
-	local always_day = global.surface.always_day
+	local always_day = global.surface.always_day or 0
 			
 	if global.always_day ~= always_day then
 		global.refresh_always_day = true
@@ -243,7 +243,7 @@ local function on_tick(event)
 			for _, player in pairs(game.players) do
 				if player.connected and player.gui.top.timetools_flow then
 					flow = player.gui.top.timetools_flow
-					if flow.timetools_but_time == nil then
+					if flow.timetools_but_time == nil or (debug_status and flow.timetools_but_tick == nil) then
 						flow.destroy()
 						init_player(player)
 						update_guis()
@@ -258,14 +258,7 @@ local function on_tick(event)
 							flow.timetools_but_always.sprite = "sprite_timetools_night"
 						end
 					end
-					
 					if debug_status then
-						if flow.timetools_but_tick == nil then
-							flow.destroy()
-							init_player(player)
-							update_guis()
-							flow = player.gui.top.timetools_flow -- re-assign
-						end
 						flow.timetools_but_tick.caption = game.tick
 					end
 				end
@@ -286,7 +279,6 @@ local function on_tick(event)
 						{index=6,signal={type="virtual",name="signal-clock-darkness"},count=math.floor(global.surface.darkness*100)},
 						{index=7,signal={type="virtual",name="signal-clock-lightness"},count=math.floor((1-global.surface.darkness)*100)},
 					}
-					
 					clock.entity.get_control_behavior().parameters = params
 				else
 					table.remove(global.clocks,i)
@@ -453,6 +445,18 @@ function interface.setclock( hhmm )
 	update_guis()
 end
 
+function interface.setspeed(speed)
+	debug_print( "set time" )
+	if speed == nil then speed = 1 end
+	speed = math.floor(speed) -- ensure integer
+	if speed < 1 then speed = 1 end
+	if speed > settings.global["timetools-maximum-speed"].value then
+		speed = settings.global["timetools-maximum-speed"].value
+	end
+	global.speed = speed
+	update_guis()
+end
+
 function interface.setfrozen( frozen )
 	debug_print( "frozen" )
 	
@@ -487,4 +491,5 @@ remote.add_interface( "timetools", interface )
 -- /c remote.call( "timetools", "on" )
 -- /c remote.call( "timetools", "off" )
 -- /c remote.call( "timetools", "setfrozen", true )
+-- /c remote.call( "timetools", "setspeed", 2 )
 

@@ -165,3 +165,8 @@ Version: 2.1.42
 Date: 25. 11. 2020
   Changes:
     - Updated to 1.1.0 version of factorio
+---------------------------------------------------------------------------------------------------
+Version: 2.1.43
+Date: 29. 11. 2020
+  Changes:
+    - New interface to set time compression eg. /c remote.call( "timetools", "setspeed", 2 )
