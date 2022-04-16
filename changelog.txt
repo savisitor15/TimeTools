@@ -170,3 +170,8 @@ Version: 2.1.43
 Date: 29. 11. 2020
   Changes:
     - New interface to set time compression eg. /c remote.call( "timetools", "setspeed", 2 )
+---------------------------------------------------------------------------------------------------
+Version: 2.1.44
+Date: 16. 04. 2022
+  Changes:
+    - New Chinese translation by mlzxgzy
