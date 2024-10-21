@@ -175,3 +175,8 @@ Version: 2.1.44
 Date: 16. 04. 2022
   Changes:
     - New Chinese translation by mlzxgzy
+---------------------------------------------------------------------------------------------------
+Version: 3.0.0
+Date: 21. 10. 2024
+  Changes:
+    - First pass 2.0 update
