@@ -185,3 +185,8 @@ Version: 3.0.1
 Date: 21. 10. 2024
   Changes:
     - First fix for 2.0 update
+---------------------------------------------------------------------------------------------------
+Version: 3.0.1
+Date: 21. 10. 2024
+  Changes:
+    - 2.0 construction events changed

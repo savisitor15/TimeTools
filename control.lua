@@ -175,7 +175,7 @@ script.on_event(defines.events.on_player_joined_game, on_player_joined_game )
 
 --------------------------------------------------------------------------------------
 local function on_creation( event )
-	local ent = event.created_entity
+	local ent = event.entity
 	
 	if ent.name == "clock-combinator" then
 		debug_print( "clock-combinator created" )
