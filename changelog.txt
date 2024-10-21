@@ -186,7 +186,13 @@ Date: 21. 10. 2024
   Changes:
     - First fix for 2.0 update
 ---------------------------------------------------------------------------------------------------
-Version: 3.0.1
+Version: 3.0.2
 Date: 21. 10. 2024
   Changes:
     - 2.0 construction events changed
+---------------------------------------------------------------------------------------------------
+Version: 3.0.3
+Date: 21. 10. 2024
+  Changes:
+    - Filtered on_built and on_destruction events properly
+    - added on_nth_tick for main logic (still configuarable)

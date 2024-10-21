@@ -5,6 +5,7 @@ require("utils")
 --require("config")
 
 local ticks_per_day = 25000
+local event_filter = {{filter = "name", name = "clock-combinator"}}
 
 --------------------------------------------------------------------------------------
 local function init_day()
@@ -121,7 +122,7 @@ local function on_configuration_changed(data)
 		
 			init_globals()
 			
-			storagealways_day = -1 -- to force update of icon
+			storage.always_day = -1 -- to force update of icon
 
 			init_forces()
 
@@ -175,6 +176,7 @@ script.on_event(defines.events.on_player_joined_game, on_player_joined_game )
 
 --------------------------------------------------------------------------------------
 local function on_creation( event )
+	debug_print("TimeTools - Creation Event")
 	local ent = event.entity
 	
 	if ent.name == "clock-combinator" then
@@ -190,8 +192,8 @@ local function on_creation( event )
 	end
 end
 
-script.on_event(defines.events.on_built_entity, on_creation )
-script.on_event(defines.events.on_robot_built_entity, on_creation )
+script.on_event(defines.events.on_built_entity, on_creation, event_filter)
+script.on_event(defines.events.on_robot_built_entity, on_creation, event_filter)
 
 --------------------------------------------------------------------------------------
 local function on_destruction( event )
@@ -211,9 +213,9 @@ local function on_destruction( event )
 	end
 end
 
-script.on_event(defines.events.on_entity_died, on_destruction )
-script.on_event(defines.events.on_robot_pre_mined, on_destruction )
-script.on_event(defines.events.on_pre_player_mined_item, on_destruction )
+script.on_event(defines.events.on_entity_died, on_destruction, event_filter)
+script.on_event(defines.events.on_robot_pre_mined, on_destruction, event_filter)
+script.on_event(defines.events.on_pre_player_mined_item, on_destruction, event_filter)
 
 --------------------------------------------------------------------------------------
 local function format_time()
@@ -231,63 +233,63 @@ local function on_tick(event)
 			update_guis()
 		end
 	end
-	if (game.tick % settings.global["timetools-clock-update-interval"].value) == 0 then
-		get_time()
+	get_time()
 
-		-- update time display on button
+	-- update time display on button
+	
+	if storage.display then
+		local s_time = format_time()
+		local flow
 		
-		if storage.display then
-			local s_time = format_time()
-			local flow
-			
-			for _, player in pairs(game.players) do
-				if player.connected and player.gui.top.timetools_flow then
-					flow = player.gui.top.timetools_flow
-					if flow.timetools_but_time == nil or (debug_status and flow.timetools_but_tick == nil) then
-						flow.destroy()
-						init_player(player)
-						update_guis()
-						flow = player.gui.top.timetools_flow -- re-assign
-					end
-					flow.timetools_but_time.caption = s_time
-					
-					if storage.refresh_always_day then
-						if storage.surface.always_day then
-							flow.timetools_but_always.sprite = "sprite_timetools_alwday"
-						else
-							flow.timetools_but_always.sprite = "sprite_timetools_night"
-						end
-					end
-					if debug_status then
-						flow.timetools_but_tick.caption = game.tick
+		for _, player in pairs(game.players) do
+			if player.connected and player.gui.top.timetools_flow then
+				flow = player.gui.top.timetools_flow
+				if flow.timetools_but_time == nil or (debug_status and flow.timetools_but_tick == nil) then
+					flow.destroy()
+					init_player(player)
+					update_guis()
+					flow = player.gui.top.timetools_flow -- re-assign
+				end
+				flow.timetools_but_time.caption = s_time
+				
+				if storage.refresh_always_day then
+					if storage.surface.always_day then
+						flow.timetools_but_always.sprite = "sprite_timetools_alwday"
+					else
+						flow.timetools_but_always.sprite = "sprite_timetools_night"
 					end
 				end
+				if debug_status then
+					flow.timetools_but_tick.caption = game.tick
+				end
 			end
-			
-			storage.refresh_always_day = false
 		end
+		
+		storage.refresh_always_day = false
 	end
-	if (game.tick % settings.global["timetools-combinator-interval"].value)  == 0 then
-			for i, clock in pairs(storage.clocks) do
-				if clock.entity.valid then
-					params = {
-						{index=1,signal={type="virtual",name="signal-clock-gametick"},count=math.floor(game.tick)},
-						{index=2,signal={type="virtual",name="signal-clock-day"},count=storage.day},
-						{index=3,signal={type="virtual",name="signal-clock-hour"},count=storage.h},
-						{index=4,signal={type="virtual",name="signal-clock-minute"},count=storage.m},
-						{index=5,signal={type="virtual",name="signal-clock-alwaysday"},count=iif(storage.surface.always_day,1,0)},
-						{index=6,signal={type="virtual",name="signal-clock-darkness"},count=math.floor(storage.surface.darkness*100)},
-						{index=7,signal={type="virtual",name="signal-clock-lightness"},count=math.floor((1-storage.surface.darkness)*100)},
-					}
-					clock.entity.get_control_behavior().parameters = params
-				else
-					table.remove(storage.clocks,i)
-				end
+		for i, clock in pairs(storage.clocks) do
+			if clock.entity.valid then
+				--- delete and re-add
+				clock.entity.get_control_behavior().remove_section(1)
+				clock.entity.get_control_behavior().add_section("clock")
+				local clock_section = clock.entity.get_control_behavior().get_section(1)
+				params = {
+					{index=1,value={type="virtual",name="signal-clock-gametick"},min=math.floor(game.tick)},
+					{index=2,value={type="virtual",name="signal-clock-day"},min=storage.day},
+					{index=3,value={type="virtual",name="signal-clock-hour"},min=storage.h},
+					{index=4,value={type="virtual",name="signal-clock-minute"},min=storage.m},
+					{index=5,value={type="virtual",name="signal-clock-alwaysday"},min=iif(storage.surface.always_day,1,0)},
+					{index=6,value={type="virtual",name="signal-clock-darkness"},min=math.floor(storage.surface.darkness*100)},
+					{index=7,value={type="virtual",name="signal-clock-lightness"},min=math.floor((1-storage.surface.darkness)*100)},
+				}
+				clock_section.filters = params
+			else
+				table.remove(storage.clocks,i)
 			end
-	end
+		end
 end
 
-script.on_event(defines.events.on_tick, on_tick)
+script.on_nth_tick(settings.global["timetools-combinator-interval"].value, on_tick)
 
 --------------------------------------------------------------------------------------
 local function on_gui_click(event)
