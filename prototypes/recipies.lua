@@ -4,13 +4,13 @@ data:extend(
 	{
 		type = "recipe",
 		name = "clock-combinator",
-		enabled = "false",
+		enabled = false,
 		ingredients =
 		{
-			{"copper-cable", 5},
-			{"electronic-circuit", 2},
+			{type = "item", name = "copper-cable", amount = 5},
+      		{type = "item", name = "electronic-circuit", amount = 2}
 		},
-		result = "clock-combinator"
+		results = {{type = "item", name = "clock-combinator", amount = 1}}
 	},
 	
 }

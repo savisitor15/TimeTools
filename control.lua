@@ -8,7 +8,7 @@ local ticks_per_day = 25000
 
 --------------------------------------------------------------------------------------
 local function init_day()
-	global.day = 1 + math.floor((game.tick+(ticks_per_day/2)) / ticks_per_day)
+	storageday = 1 + math.floor((game.tick+(ticks_per_day/2)) / ticks_per_day)
 end
 
 --------------------------------------------------------------------------------------
@@ -17,31 +17,31 @@ local function get_time()
 	-- game starts at daytime = 0, so noon of day 1.
 		
 	local daytime
-	local always_day = global.surface.always_day or 0
+	local always_day = storagesurface.always_day or 0
 			
-	if global.always_day ~= always_day then
-		global.refresh_always_day = true
+	if storagealways_day ~= always_day then
+		storagerefresh_always_day = true
 	end
 		
 	if always_day then
 		daytime = game.tick / ticks_per_day
 		daytime = daytime - math.floor(daytime)
 	else
-		if global.always_day == true then
-			daytime = ((global.h + 12) + (global.m / 60)) / 24
-			global.surface.daytime = daytime - math.floor(daytime)
+		if storagealways_day == true then
+			daytime = ((storageh + 12) + (storagem / 60)) / 24
+			storagesurface.daytime = daytime - math.floor(daytime)
 		end
-		daytime = global.surface.daytime
+		daytime = storagesurface.daytime
 	end
 		
 	daytime = (daytime*24+12) % 24
-	global.h = math.floor(daytime)
-	global.m = math.floor((daytime-global.h)*60)
+	storageh = math.floor(daytime)
+	storagem = math.floor((daytime-storageh)*60)
 	-- day calculation independant of hour
-	global.day = math.floor((game.tick+(ticks_per_day/2)) / ticks_per_day) + 1
+	storageday = math.floor((game.tick+(ticks_per_day/2)) / ticks_per_day) + 1
 	
-	global.always_day = always_day
-	global.h_prev = global.h
+	storagealways_day = always_day
+	storageh_prev = storageh
 end
 
 --------------------------------------------------------------------------------------
@@ -49,34 +49,34 @@ local function init_globals()
 	-- initialize or update general globals of the mod
 	debug_print( "init_globals" )
 	
-	global.ticks = global.ticks or 0
-	global.cycles = global.cycles or 0
-	global.surface = game.surfaces.nauvis
+	storageticks = storageticks or 0
+	storagecycles = storagecycles or 0
+	storagesurface = game.surfaces.nauvis
 
-	if global.offset == nil then global.offset = 0 end
-	if global.h == nil then global.h = 12 end
-	if global.m == nil then global.m = 0 end
-	global.h_prev = global.h_prev or 23
-	global.always_day = global.always_day or -1 -- -1 to force update of the icon at first install
-	global.refresh_always_day = true
+	if storageoffset == nil then storageoffset = 0 end
+	if storageh == nil then storageh = 12 end
+	if storagem == nil then storagem = 0 end
+	storageh_prev = storageh_prev or 23
+	storagealways_day = storagealways_day or -1 -- -1 to force update of the icon at first install
+	storagerefresh_always_day = true
 	
-	if not settings.global["timetools-always-day"].value then global.surface.always_day = false end
+	if not settings.global["timetools-always-day"].value then storagesurface.always_day = false end
 	
-	if global.day == nil then 
+	if storageday == nil then 
 		init_day() 
 		get_time()
 	end
 	
-	if global.frozen == nil then global.frozen = false end
-	if global.display == nil then global.display = true end
-	global.clocks = global.clocks or {}
+	if storagefrozen == nil then storagefrozen = false end
+	if storagedisplay == nil then storagedisplay = true end
+	storageclocks = storageclocks or {}
 	
-	global.speed_mem = global.speed_mem or settings.global["timetools-maximum-speed"].value
+	storagespeed_mem = storagespeed_mem or settings.global["timetools-maximum-speed"].value
 end
 
 --------------------------------------------------------------------------------------
 local function init_player(player)
-	if global.ticks == nil then return end
+	if storageticks == nil then return end
 	
 	-- initialize or update per player globals of the mod, and reset the gui
 	debug_print( "init_player ", player.name, " connected=", player.connected )
@@ -121,7 +121,7 @@ local function on_configuration_changed(data)
 		
 			init_globals()
 			
-			global.always_day = -1 -- to force update of icon
+			storagealways_day = -1 -- to force update of icon
 
 			init_forces()
 
@@ -180,13 +180,13 @@ local function on_creation( event )
 	if ent.name == "clock-combinator" then
 		debug_print( "clock-combinator created" )
 		
-		table.insert( global.clocks, 
+		table.insert( storageclocks, 
 			{
 				entity = ent, 
 			}
 		)
 		
-		debug_print( "clocks=" .. #global.clocks )
+		debug_print( "clocks=" .. #storageclocks )
 	end
 end
 
@@ -200,14 +200,14 @@ local function on_destruction( event )
 	if ent.name == "clock-combinator" then
 		debug_print( "clock-combinator destroyed" )
 		
-		for i, clock in ipairs(global.clocks) do
+		for i, clock in ipairs(storageclocks) do
 			if clock.entity == ent then
-				table.remove( global.clocks, i )
+				table.remove( storageclocks, i )
 				break
 			end
 		end
 		
-		debug_print( "clocks=" .. #global.clocks )
+		debug_print( "clocks=" .. #storageclocks )
 	end
 end
 
@@ -218,16 +218,16 @@ script.on_event(defines.events.on_pre_player_mined_item, on_destruction )
 --------------------------------------------------------------------------------------
 local function format_time()
 	local sTime = ""
-	sTime = string.format("%u-%02u:%02u", global.day, global.h, global.m )
+	sTime = string.format("%u-%02u:%02u", storageday, storageh, storagem )
 	return sTime
 end
 
 local function on_tick(event)
-	if global.speed_mem > settings.global["timetools-maximum-speed"].value then
+	if storagespeed_mem > settings.global["timetools-maximum-speed"].value then
 		-- User changed the speed mid acceleration or on the fly
-		global.speed_mem = settings.global["timetools-maximum-speed"].value
-		if  game.speed > global.speed_mem then
-			game.speed = global.speed_mem
+		storagespeed_mem = settings.global["timetools-maximum-speed"].value
+		if  game.speed > storagespeed_mem then
+			game.speed = storagespeed_mem
 			update_guis()
 		end
 	end
@@ -236,7 +236,7 @@ local function on_tick(event)
 
 		-- update time display on button
 		
-		if global.display then
+		if storagedisplay then
 			local s_time = format_time()
 			local flow
 			
@@ -251,8 +251,8 @@ local function on_tick(event)
 					end
 					flow.timetools_but_time.caption = s_time
 					
-					if global.refresh_always_day then
-						if global.surface.always_day then
+					if storagerefresh_always_day then
+						if storagesurface.always_day then
 							flow.timetools_but_always.sprite = "sprite_timetools_alwday"
 						else
 							flow.timetools_but_always.sprite = "sprite_timetools_night"
@@ -264,24 +264,24 @@ local function on_tick(event)
 				end
 			end
 			
-			global.refresh_always_day = false
+			storagerefresh_always_day = false
 		end
 	end
 	if (game.tick % settings.global["timetools-combinator-interval"].value)  == 0 then
-			for i, clock in pairs(global.clocks) do
+			for i, clock in pairs(storageclocks) do
 				if clock.entity.valid then
 					params = {
 						{index=1,signal={type="virtual",name="signal-clock-gametick"},count=math.floor(game.tick)},
-						{index=2,signal={type="virtual",name="signal-clock-day"},count=global.day},
-						{index=3,signal={type="virtual",name="signal-clock-hour"},count=global.h},
-						{index=4,signal={type="virtual",name="signal-clock-minute"},count=global.m},
-						{index=5,signal={type="virtual",name="signal-clock-alwaysday"},count=iif(global.surface.always_day,1,0)},
-						{index=6,signal={type="virtual",name="signal-clock-darkness"},count=math.floor(global.surface.darkness*100)},
-						{index=7,signal={type="virtual",name="signal-clock-lightness"},count=math.floor((1-global.surface.darkness)*100)},
+						{index=2,signal={type="virtual",name="signal-clock-day"},count=storageday},
+						{index=3,signal={type="virtual",name="signal-clock-hour"},count=storageh},
+						{index=4,signal={type="virtual",name="signal-clock-minute"},count=storagem},
+						{index=5,signal={type="virtual",name="signal-clock-alwaysday"},count=iif(storagesurface.always_day,1,0)},
+						{index=6,signal={type="virtual",name="signal-clock-darkness"},count=math.floor(storagesurface.darkness*100)},
+						{index=7,signal={type="virtual",name="signal-clock-lightness"},count=math.floor((1-storagesurface.darkness)*100)},
 					}
 					clock.entity.get_control_behavior().parameters = params
 				else
-					table.remove(global.clocks,i)
+					table.remove(storageclocks,i)
 				end
 			end
 	end
@@ -298,34 +298,34 @@ local function on_gui_click(event)
 	end
 	if player.admin then
 		if event.element.name == "timetools_but_time" then
-			if not global.surface.always_day then
-				global.frozen = not global.frozen
-			global.surface.freeze_daytime = global.frozen
+			if not storagesurface.always_day then
+				storagefrozen = not storagefrozen
+			storagesurface.freeze_daytime = storagefrozen
 				update_guis()
 			end
 			
 		elseif event.element.name == "timetools_but_always" then
 			if settings.global["timetools-always-day"].value then
-				global.surface.always_day = not global.surface.always_day
+				storagesurface.always_day = not storagesurface.always_day
 			
-				if global.surface.always_day then
-					global.frozen = false
+				if storagesurface.always_day then
+					storagefrozen = false
 				end
 			end
 			update_guis()
 			
 		elseif event.element.name == "timetools_but_slower" then
 			if game.speed >= 0.2 then game.speed = game.speed / 2 end -- minimum 0.1
-			if game.speed ~= 1 then global.speed_mem = game.speed end
+			if game.speed ~= 1 then storagespeed_mem = game.speed end
 			update_guis()
 			
 		elseif event.element.name == "timetools_but_faster" then
 			if game.speed < settings.global["timetools-maximum-speed"].value then game.speed = game.speed * 2 end
-			if game.speed ~= 1 then global.speed_mem = game.speed end
+			if game.speed ~= 1 then storagespeed_mem = game.speed end
 			update_guis()
 
 		elseif event.element.name == "timetools_but_speed" then
-			if game.speed == 1 then game.speed = global.speed_mem else game.speed = 1 end
+			if game.speed == 1 then game.speed = storagespeed_mem else game.speed = 1 end
 			update_guis()
 		end
 	else
@@ -339,17 +339,17 @@ script.on_event(defines.events.on_gui_click, on_gui_click )
 function build_gui( player )
 	local gui1 = player.gui.top.timetools_flow
 	
-	if gui1 == nil and global.display then
+	if gui1 == nil and storagedisplay then
 		debug_print("create frame player" .. player.name)
 		gui1 = player.gui.top.add({type = "flow", name = "timetools_flow", direction = "horizontal", style = "timetools_flow_style"})
 		local gui2 = gui1.add({type = "button", name = "timetools_but_time", caption = "0-00:00", font_color = colors.white, style = "timetools_botton_time_style"})				
-		if global.frozen then
+		if storagefrozen then
 			gui2.style.font_color = colors.lightred
 		else
 			gui2.style.font_color = colors.green
 		end
 		gui2 = gui1.add({type = "sprite-button", name = "timetools_but_always", style = "timetools_sprite_style"})
-		if global.surface.always_day then
+		if storagesurface.always_day then
 			gui2.sprite = "sprite_timetools_alwday"
 		else
 			gui2.sprite = "sprite_timetools_night"
@@ -366,7 +366,7 @@ end
 	
 --------------------------------------------------------------------------------------
 function update_guis()
-	if global.display then
+	if storagedisplay then
 		for _, player in pairs(game.players) do
 			if player.connected then
 				local flow = build_gui(player)
@@ -385,13 +385,13 @@ function update_guis()
 					flow.timetools_but_speed.style.font_color = colors.lightred
 				end
 		
-				if global.surface.always_day then
+				if storagesurface.always_day then
 					flow.timetools_but_always.sprite = "sprite_timetools_alwday"
 				else
 					flow.timetools_but_always.sprite = "sprite_timetools_night"
 				end
 
-				if global.frozen then
+				if storagefrozen then
 					flow.timetools_but_time.style.font_color = colors.lightred
 				else
 					flow.timetools_but_time.style.font_color = colors.green
@@ -436,11 +436,11 @@ function interface.setclock( hhmm )
 	
 	if mm >= 60 then mm = 59 end
 	
-	global.surface.always_day = false
-	global.surface.daytime = math.min((((hh+12)%24) * 60 + mm) / 24 / 60,1)
-	global.frozen = false
-	global.h = hh
-	global.m = mm
+	storagesurface.always_day = false
+	storagesurface.daytime = math.min((((hh+12)%24) * 60 + mm) / 24 / 60,1)
+	storagefrozen = false
+	storageh = hh
+	storagem = mm
 	
 	update_guis()
 end
@@ -453,14 +453,14 @@ function interface.setspeed(speed)
 	if speed > settings.global["timetools-maximum-speed"].value then
 		speed = settings.global["timetools-maximum-speed"].value
 	end
-	global.speed = speed
+	storagespeed = speed
 	update_guis()
 end
 
 function interface.setfrozen( frozen )
 	debug_print( "frozen" )
 	
-	global.frozen = frozen
+	storagefrozen = frozen
 	
 	update_guis()
 end
@@ -468,7 +468,7 @@ end
 function interface.off( )
 	debug_print( "off" )
 	
-	global.display = false
+	storagedisplay = false
 	
 	for _, player in pairs(game.players) do
 		if player.connected and player.gui.top.timetools_flow then player.gui.top.timetools_flow.destroy() end
@@ -478,7 +478,7 @@ end
 function interface.on( )
 	debug_print( "on" )
 
-	global.display = true
+	storagedisplay = true
 	
 	update_guis()
 end
