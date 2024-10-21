@@ -368,7 +368,7 @@ end
 	
 --------------------------------------------------------------------------------------
 function update_guis()
-	if storagedisplay then
+	if storage.display then
 		for _, player in pairs(game.players) do
 			if player.connected then
 				local flow = build_gui(player)
@@ -387,13 +387,13 @@ function update_guis()
 					flow.timetools_but_speed.style.font_color = colors.lightred
 				end
 		
-				if storagesurface.always_day then
+				if storage.surface.always_day then
 					flow.timetools_but_always.sprite = "sprite_timetools_alwday"
 				else
 					flow.timetools_but_always.sprite = "sprite_timetools_night"
 				end
 
-				if storagefrozen then
+				if storage.frozen then
 					flow.timetools_but_time.style.font_color = colors.lightred
 				else
 					flow.timetools_but_time.style.font_color = colors.green

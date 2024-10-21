@@ -196,3 +196,8 @@ Date: 21. 10. 2024
   Changes:
     - Filtered on_built and on_destruction events properly
     - added on_nth_tick for main logic (still configuarable)
+---------------------------------------------------------------------------------------------------
+Version: 3.0.4
+Date: 21. 10. 2024
+  Changes:
+    - Fixed broken GUI update
