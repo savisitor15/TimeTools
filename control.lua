@@ -8,7 +8,7 @@ local ticks_per_day = 25000
 
 --------------------------------------------------------------------------------------
 local function init_day()
-	storageday = 1 + math.floor((game.tick+(ticks_per_day/2)) / ticks_per_day)
+	storage.day = 1 + math.floor((game.tick+(ticks_per_day/2)) / ticks_per_day)
 end
 
 --------------------------------------------------------------------------------------
@@ -17,31 +17,31 @@ local function get_time()
 	-- game starts at daytime = 0, so noon of day 1.
 		
 	local daytime
-	local always_day = storagesurface.always_day or 0
+	local always_day = storage.surface.always_day or 0
 			
-	if storagealways_day ~= always_day then
-		storagerefresh_always_day = true
+	if storage.always_day ~= always_day then
+		storage.refresh_always_day = true
 	end
 		
 	if always_day then
 		daytime = game.tick / ticks_per_day
 		daytime = daytime - math.floor(daytime)
 	else
-		if storagealways_day == true then
-			daytime = ((storageh + 12) + (storagem / 60)) / 24
-			storagesurface.daytime = daytime - math.floor(daytime)
+		if storage.always_day == true then
+			daytime = ((storage.h + 12) + (storage.m / 60)) / 24
+			storage.surface.daytime = daytime - math.floor(daytime)
 		end
-		daytime = storagesurface.daytime
+		daytime = storage.surface.daytime
 	end
 		
 	daytime = (daytime*24+12) % 24
-	storageh = math.floor(daytime)
-	storagem = math.floor((daytime-storageh)*60)
+	storage.h = math.floor(daytime)
+	storage.m = math.floor((daytime-storage.h)*60)
 	-- day calculation independant of hour
-	storageday = math.floor((game.tick+(ticks_per_day/2)) / ticks_per_day) + 1
+	storage.day = math.floor((game.tick+(ticks_per_day/2)) / ticks_per_day) + 1
 	
-	storagealways_day = always_day
-	storageh_prev = storageh
+	storage.always_day = always_day
+	storage.h_prev = storage.h
 end
 
 --------------------------------------------------------------------------------------
@@ -49,34 +49,34 @@ local function init_globals()
 	-- initialize or update general globals of the mod
 	debug_print( "init_globals" )
 	
-	storageticks = storageticks or 0
-	storagecycles = storagecycles or 0
-	storagesurface = game.surfaces.nauvis
+	storage.ticks = storage.ticks or 0
+	storage.cycles = storage.cycles or 0
+	storage.surface = game.surfaces.nauvis
 
-	if storageoffset == nil then storageoffset = 0 end
-	if storageh == nil then storageh = 12 end
-	if storagem == nil then storagem = 0 end
-	storageh_prev = storageh_prev or 23
-	storagealways_day = storagealways_day or -1 -- -1 to force update of the icon at first install
-	storagerefresh_always_day = true
+	if storage.offset == nil then storage.offset = 0 end
+	if storage.h == nil then storage.h = 12 end
+	if storage.m == nil then storage.m = 0 end
+	storage.h_prev = storage.h_prev or 23
+	storage.always_day = storage.always_day or -1 -- -1 to force update of the icon at first install
+	storage.refresh_always_day = true
 	
-	if not settings.global["timetools-always-day"].value then storagesurface.always_day = false end
+	if not settings.global["timetools-always-day"].value then storage.surface.always_day = false end
 	
-	if storageday == nil then 
+	if storage.day == nil then 
 		init_day() 
 		get_time()
 	end
 	
-	if storagefrozen == nil then storagefrozen = false end
-	if storagedisplay == nil then storagedisplay = true end
-	storageclocks = storageclocks or {}
+	if storage.frozen == nil then storage.frozen = false end
+	if storage.display == nil then storage.display = true end
+	storage.clocks = storage.clocks or {}
 	
-	storagespeed_mem = storagespeed_mem or settings.global["timetools-maximum-speed"].value
+	storage.speed_mem = storage.speed_mem or settings.global["timetools-maximum-speed"].value
 end
 
 --------------------------------------------------------------------------------------
 local function init_player(player)
-	if storageticks == nil then return end
+	if storage.ticks == nil then return end
 	
 	-- initialize or update per player globals of the mod, and reset the gui
 	debug_print( "init_player ", player.name, " connected=", player.connected )
@@ -180,13 +180,13 @@ local function on_creation( event )
 	if ent.name == "clock-combinator" then
 		debug_print( "clock-combinator created" )
 		
-		table.insert( storageclocks, 
+		table.insert( storage.clocks, 
 			{
 				entity = ent, 
 			}
 		)
 		
-		debug_print( "clocks=" .. #storageclocks )
+		debug_print( "clocks=" .. #storage.clocks )
 	end
 end
 
@@ -200,14 +200,14 @@ local function on_destruction( event )
 	if ent.name == "clock-combinator" then
 		debug_print( "clock-combinator destroyed" )
 		
-		for i, clock in ipairs(storageclocks) do
+		for i, clock in ipairs(storage.clocks) do
 			if clock.entity == ent then
-				table.remove( storageclocks, i )
+				table.remove( storage.clocks, i )
 				break
 			end
 		end
 		
-		debug_print( "clocks=" .. #storageclocks )
+		debug_print( "clocks=" .. #storage.clocks )
 	end
 end
 
@@ -218,16 +218,16 @@ script.on_event(defines.events.on_pre_player_mined_item, on_destruction )
 --------------------------------------------------------------------------------------
 local function format_time()
 	local sTime = ""
-	sTime = string.format("%u-%02u:%02u", storageday, storageh, storagem )
+	sTime = string.format("%u-%02u:%02u", storage.day, storage.h, storage.m )
 	return sTime
 end
 
 local function on_tick(event)
-	if storagespeed_mem > settings.global["timetools-maximum-speed"].value then
+	if storage.speed_mem > settings.global["timetools-maximum-speed"].value then
 		-- User changed the speed mid acceleration or on the fly
-		storagespeed_mem = settings.global["timetools-maximum-speed"].value
-		if  game.speed > storagespeed_mem then
-			game.speed = storagespeed_mem
+		storage.speed_mem = settings.global["timetools-maximum-speed"].value
+		if  game.speed > storage.speed_mem then
+			game.speed = storage.speed_mem
 			update_guis()
 		end
 	end
@@ -236,7 +236,7 @@ local function on_tick(event)
 
 		-- update time display on button
 		
-		if storagedisplay then
+		if storage.display then
 			local s_time = format_time()
 			local flow
 			
@@ -251,8 +251,8 @@ local function on_tick(event)
 					end
 					flow.timetools_but_time.caption = s_time
 					
-					if storagerefresh_always_day then
-						if storagesurface.always_day then
+					if storage.refresh_always_day then
+						if storage.surface.always_day then
 							flow.timetools_but_always.sprite = "sprite_timetools_alwday"
 						else
 							flow.timetools_but_always.sprite = "sprite_timetools_night"
@@ -264,24 +264,24 @@ local function on_tick(event)
 				end
 			end
 			
-			storagerefresh_always_day = false
+			storage.refresh_always_day = false
 		end
 	end
 	if (game.tick % settings.global["timetools-combinator-interval"].value)  == 0 then
-			for i, clock in pairs(storageclocks) do
+			for i, clock in pairs(storage.clocks) do
 				if clock.entity.valid then
 					params = {
 						{index=1,signal={type="virtual",name="signal-clock-gametick"},count=math.floor(game.tick)},
-						{index=2,signal={type="virtual",name="signal-clock-day"},count=storageday},
-						{index=3,signal={type="virtual",name="signal-clock-hour"},count=storageh},
-						{index=4,signal={type="virtual",name="signal-clock-minute"},count=storagem},
-						{index=5,signal={type="virtual",name="signal-clock-alwaysday"},count=iif(storagesurface.always_day,1,0)},
-						{index=6,signal={type="virtual",name="signal-clock-darkness"},count=math.floor(storagesurface.darkness*100)},
-						{index=7,signal={type="virtual",name="signal-clock-lightness"},count=math.floor((1-storagesurface.darkness)*100)},
+						{index=2,signal={type="virtual",name="signal-clock-day"},count=storage.day},
+						{index=3,signal={type="virtual",name="signal-clock-hour"},count=storage.h},
+						{index=4,signal={type="virtual",name="signal-clock-minute"},count=storage.m},
+						{index=5,signal={type="virtual",name="signal-clock-alwaysday"},count=iif(storage.surface.always_day,1,0)},
+						{index=6,signal={type="virtual",name="signal-clock-darkness"},count=math.floor(storage.surface.darkness*100)},
+						{index=7,signal={type="virtual",name="signal-clock-lightness"},count=math.floor((1-storage.surface.darkness)*100)},
 					}
 					clock.entity.get_control_behavior().parameters = params
 				else
-					table.remove(storageclocks,i)
+					table.remove(storage.clocks,i)
 				end
 			end
 	end
@@ -298,34 +298,34 @@ local function on_gui_click(event)
 	end
 	if player.admin then
 		if event.element.name == "timetools_but_time" then
-			if not storagesurface.always_day then
-				storagefrozen = not storagefrozen
-			storagesurface.freeze_daytime = storagefrozen
+			if not storage.surface.always_day then
+				storage.frozen = not storage.frozen
+			storage.surface.freeze_daytime = storage.frozen
 				update_guis()
 			end
 			
 		elseif event.element.name == "timetools_but_always" then
 			if settings.global["timetools-always-day"].value then
-				storagesurface.always_day = not storagesurface.always_day
+				storage.surface.always_day = not storage.surface.always_day
 			
-				if storagesurface.always_day then
-					storagefrozen = false
+				if storage.surface.always_day then
+					storage.frozen = false
 				end
 			end
 			update_guis()
 			
 		elseif event.element.name == "timetools_but_slower" then
 			if game.speed >= 0.2 then game.speed = game.speed / 2 end -- minimum 0.1
-			if game.speed ~= 1 then storagespeed_mem = game.speed end
+			if game.speed ~= 1 then storage.speed_mem = game.speed end
 			update_guis()
 			
 		elseif event.element.name == "timetools_but_faster" then
 			if game.speed < settings.global["timetools-maximum-speed"].value then game.speed = game.speed * 2 end
-			if game.speed ~= 1 then storagespeed_mem = game.speed end
+			if game.speed ~= 1 then storage.speed_mem = game.speed end
 			update_guis()
 
 		elseif event.element.name == "timetools_but_speed" then
-			if game.speed == 1 then game.speed = storagespeed_mem else game.speed = 1 end
+			if game.speed == 1 then game.speed = storage.speed_mem else game.speed = 1 end
 			update_guis()
 		end
 	else
@@ -339,17 +339,17 @@ script.on_event(defines.events.on_gui_click, on_gui_click )
 function build_gui( player )
 	local gui1 = player.gui.top.timetools_flow
 	
-	if gui1 == nil and storagedisplay then
+	if gui1 == nil and storage.display then
 		debug_print("create frame player" .. player.name)
 		gui1 = player.gui.top.add({type = "flow", name = "timetools_flow", direction = "horizontal", style = "timetools_flow_style"})
 		local gui2 = gui1.add({type = "button", name = "timetools_but_time", caption = "0-00:00", font_color = colors.white, style = "timetools_botton_time_style"})				
-		if storagefrozen then
+		if storage.frozen then
 			gui2.style.font_color = colors.lightred
 		else
 			gui2.style.font_color = colors.green
 		end
 		gui2 = gui1.add({type = "sprite-button", name = "timetools_but_always", style = "timetools_sprite_style"})
-		if storagesurface.always_day then
+		if storage.surface.always_day then
 			gui2.sprite = "sprite_timetools_alwday"
 		else
 			gui2.sprite = "sprite_timetools_night"
@@ -436,11 +436,11 @@ function interface.setclock( hhmm )
 	
 	if mm >= 60 then mm = 59 end
 	
-	storagesurface.always_day = false
-	storagesurface.daytime = math.min((((hh+12)%24) * 60 + mm) / 24 / 60,1)
-	storagefrozen = false
-	storageh = hh
-	storagem = mm
+	storage.surface.always_day = false
+	storage.surface.daytime = math.min((((hh+12)%24) * 60 + mm) / 24 / 60,1)
+	storage.frozen = false
+	storage.h = hh
+	storage.m = mm
 	
 	update_guis()
 end
@@ -453,14 +453,14 @@ function interface.setspeed(speed)
 	if speed > settings.global["timetools-maximum-speed"].value then
 		speed = settings.global["timetools-maximum-speed"].value
 	end
-	storagespeed = speed
+	storage.speed = speed
 	update_guis()
 end
 
 function interface.setfrozen( frozen )
 	debug_print( "frozen" )
 	
-	storagefrozen = frozen
+	storage.frozen = frozen
 	
 	update_guis()
 end
@@ -468,7 +468,7 @@ end
 function interface.off( )
 	debug_print( "off" )
 	
-	storagedisplay = false
+	storage.display = false
 	
 	for _, player in pairs(game.players) do
 		if player.connected and player.gui.top.timetools_flow then player.gui.top.timetools_flow.destroy() end
@@ -478,7 +478,7 @@ end
 function interface.on( )
 	debug_print( "on" )
 
-	storagedisplay = true
+	storage.display = true
 	
 	update_guis()
 end
