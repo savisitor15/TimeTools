@@ -4,11 +4,11 @@ debug_file = debug_mod_name .. "-debug.txt"
 require("utils")
 --require("config")
 
-local ticks_per_day = 25000
 local event_filter = {{filter = "name", name = "clock-combinator"}}
 
 --------------------------------------------------------------------------------------
 local function init_day()
+	local ticks_per_day = game.surfaces.nauvis.ticks_per_day
 	storage.day = 1 + math.floor((game.tick+(ticks_per_day/2)) / ticks_per_day)
 end
 
@@ -16,7 +16,7 @@ end
 local function get_time()
 	-- daytime : 0.0 to 1.0, noon to noon (midnight at 0.5), max light to min light to max light...
 	-- game starts at daytime = 0, so noon of day 1.
-		
+	local ticks_per_day = game.surfaces.nauvis.ticks_per_day
 	local daytime
 	local always_day = storage.surface.always_day or 0
 			
@@ -25,12 +25,11 @@ local function get_time()
 	end
 		
 	if always_day then
-		daytime = game.tick / ticks_per_day
-		daytime = daytime - math.floor(daytime)
+		daytime = storage.surface.daytime
 	else
 		if storage.always_day == true then
 			daytime = ((storage.h + 12) + (storage.m / 60)) / 24
-			storage.surface.daytime = daytime - math.floor(daytime)
+			-- storage.surface.daytime = daytime - math.floor(daytime)
 		end
 		daytime = storage.surface.daytime
 	end
@@ -439,7 +438,7 @@ function interface.setclock( hhmm )
 	if mm >= 60 then mm = 59 end
 	
 	storage.surface.always_day = false
-	storage.surface.daytime = math.min((((hh+12)%24) * 60 + mm) / 24 / 60,1)
+	-- storage.surface.daytime = math.min((((hh+12)%24) * 60 + mm) / 24 / 60,1)
 	storage.frozen = false
 	storage.h = hh
 	storage.m = mm

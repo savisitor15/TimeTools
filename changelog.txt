@@ -201,3 +201,8 @@ Version: 3.0.4
 Date: 21. 10. 2024
   Changes:
     - Fixed broken GUI update
+---------------------------------------------------------------------------------------------------
+Version: 3.0.5
+Date: 22. 10. 2024
+  Changes:
+    - Changed daytime to be offloaded to the ingame surface of Nauvis
