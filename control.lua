@@ -36,12 +36,34 @@ local function get_time()
 		
 	daytime = (daytime*24+12) % 24
 	storage.h = math.floor(daytime)
-	storage.m = math.floor((daytime-storage.h)*60)
+	storage.m = math.floor((daytime - storage.h)*60)
 	-- day calculation independant of hour
 	storage.day = math.floor((game.tick+(ticks_per_day/2)) / ticks_per_day) + 1
 	
 	storage.always_day = always_day
 	storage.h_prev = storage.h
+end
+
+local function get_planet_time(surf)
+	if surf == nil then return end
+	local ticks_per_day = surf.ticks_per_day
+	local daytime
+	local h
+	local m
+	local day
+	local always_day
+	daytime = (surf.daytime * 24 + 12) % 24
+	h = math.floor(daytime)
+	m = math.floor((daytime - h) * 60)
+	day = math.floor((game.tick + (ticks_per_day/2)) / ticks_per_day) + 1
+	always_day = surf.always_day
+	return {
+		daytime = daytime, 
+		h = h, 
+		m = m, 
+		day = day, 
+		always_day = always_day
+	}
 end
 
 --------------------------------------------------------------------------------------
@@ -180,7 +202,8 @@ local function on_creation( event )
 	
 	if ent.name == "clock-combinator" then
 		debug_print( "clock-combinator created" )
-		
+		ent.get_control_behavior().remove_section(1)
+		ent.get_control_behavior().add_section("clock-legacy")
 		table.insert( storage.clocks, 
 			{
 				entity = ent, 
@@ -221,6 +244,51 @@ local function format_time()
 	local sTime = ""
 	sTime = string.format("%u-%02u:%02u", storage.day, storage.h, storage.m )
 	return sTime
+end
+
+local function on_clock_tick(event)
+	for i, clock in pairs(storage.clocks) do
+		if clock.entity.valid then
+			local clock_behavior = clock.entity.get_control_behavior() 
+			local clock_section = clock_behavior.get_section(1) -- clock-legacy
+			params = {
+				{index=1,value={type="virtual",name="signal-clock-gametick"},min=math.floor(game.tick)},
+				{index=2,value={type="virtual",name="signal-clock-day"},min=storage.day},
+				{index=3,value={type="virtual",name="signal-clock-hour"},min=storage.h},
+				{index=4,value={type="virtual",name="signal-clock-minute"},min=storage.m},
+				{index=5,value={type="virtual",name="signal-clock-alwaysday"},min=iif(storage.surface.always_day,1,0)},
+				{index=6,value={type="virtual",name="signal-clock-darkness"},min=math.floor(storage.surface.darkness*100)},
+				{index=7,value={type="virtual",name="signal-clock-lightness"},min=math.floor((1-storage.surface.darkness)*100)},
+			}
+			clock_section.filters = params
+			local clock_counter = 2
+			for planet_name, planet in pairs(game.planets) do
+				local surf = planet.surface
+				if surf == nil then goto CONTINUE end
+				debug_print(planet_name)
+				debug_print(clock_counter)
+				local clock_name = string.format("clock-%s", planet_name)
+				local get_dt = get_planet_time(surf)
+				clock_behavior.remove_section(clock_counter)
+				clock_behavior.add_section(clock_name)
+				clock_section = clock_behavior.get_section(clock_counter)
+				params = {
+					{index=1,value={type="virtual",name="signal-clock-gametick"},min=math.floor(game.tick)},
+					{index=2,value={type="virtual",name="signal-clock-day"},min=get_dt.day},
+					{index=3,value={type="virtual",name="signal-clock-hour"},min=get_dt.h},
+					{index=4,value={type="virtual",name="signal-clock-minute"},min=get_dt.m},
+					{index=5,value={type="virtual",name="signal-clock-alwaysday"},min=iif(surf.always_day,1,0)},
+					{index=6,value={type="virtual",name="signal-clock-darkness"},min=math.floor(surf.darkness*100)},
+					{index=7,value={type="virtual",name="signal-clock-lightness"},min=math.floor((1-surf.darkness)*100)},
+				}
+				clock_section.filters = params
+				clock_counter = clock_counter + 1
+				::CONTINUE::
+			end
+		else
+			table.remove(storage.clocks,i)
+		end
+	end
 end
 
 local function on_tick(event)
@@ -266,29 +334,11 @@ local function on_tick(event)
 		
 		storage.refresh_always_day = false
 	end
-		for i, clock in pairs(storage.clocks) do
-			if clock.entity.valid then
-				--- delete and re-add
-				clock.entity.get_control_behavior().remove_section(1)
-				clock.entity.get_control_behavior().add_section("clock")
-				local clock_section = clock.entity.get_control_behavior().get_section(1)
-				params = {
-					{index=1,value={type="virtual",name="signal-clock-gametick"},min=math.floor(game.tick)},
-					{index=2,value={type="virtual",name="signal-clock-day"},min=storage.day},
-					{index=3,value={type="virtual",name="signal-clock-hour"},min=storage.h},
-					{index=4,value={type="virtual",name="signal-clock-minute"},min=storage.m},
-					{index=5,value={type="virtual",name="signal-clock-alwaysday"},min=iif(storage.surface.always_day,1,0)},
-					{index=6,value={type="virtual",name="signal-clock-darkness"},min=math.floor(storage.surface.darkness*100)},
-					{index=7,value={type="virtual",name="signal-clock-lightness"},min=math.floor((1-storage.surface.darkness)*100)},
-				}
-				clock_section.filters = params
-			else
-				table.remove(storage.clocks,i)
-			end
-		end
+	on_clock_tick(event)
 end
 
 script.on_nth_tick(settings.global["timetools-combinator-interval"].value, on_tick)
+
 
 --------------------------------------------------------------------------------------
 local function on_gui_click(event)

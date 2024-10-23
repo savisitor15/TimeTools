@@ -206,3 +206,8 @@ Version: 3.0.5
 Date: 22. 10. 2024
   Changes:
     - Changed daytime to be offloaded to the ingame surface of Nauvis
+---------------------------------------------------------------------------------------------------
+Version: 3.0.6
+Date: 23. 10. 2024
+  Changes:
+    - Added a new feature to extend the clock with a new way to calculate a planet's time and date.
