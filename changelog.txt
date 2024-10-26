@@ -211,3 +211,8 @@ Version: 3.0.6
 Date: 23. 10. 2024
   Changes:
     - Added a new feature to extend the clock with a new way to calculate a planet's time and date.
+---------------------------------------------------------------------------------------------------
+Version: 3.0.7
+Date: 26. 10. 2024
+  Changes:
+    - Work around implemented for bug in base game surrounding signals needing 'quality'

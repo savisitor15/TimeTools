@@ -1,3 +1,5 @@
+local sounds = require("__base__.prototypes.entity.sounds")
+local hit_effects = require("__base__.prototypes.entity.hit-effects")
 data:extend(
 {
 	----------------------------------------------------------------------------------
@@ -9,13 +11,15 @@ data:extend(
 		flags = {"placeable-neutral", "player-creation"},
 		minable = {hardness = 0.2, mining_time = 0.5, result = "clock-combinator"},
 		max_health = 50,
-		corpse = "small-remnants",
-
+		corpse = "constant-combinator-remnants",
+    fast_replaceable_group = "constant-combinator",
+    open_sound = sounds.combinator_open,
+    close_sound = sounds.combinator_close,
 		collision_box = {{-0.35, -0.35}, {0.35, 0.35}},
 		selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
-
+    damaged_trigger_effect = hit_effects.entity(),
 		item_slot_count = 15,
-
+    circuit_wire_max_distance = 9,
 		sprites =
 		{
 			north =
@@ -188,8 +192,7 @@ data:extend(
           green = {-0.46875, -0.40625},
         }
       }
-    },
-	circuit_wire_max_distance = 7.5
+    }
 	},
 
 }

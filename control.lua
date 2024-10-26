@@ -203,7 +203,6 @@ local function on_creation( event )
 	if ent.name == "clock-combinator" then
 		debug_print( "clock-combinator created" )
 		ent.get_control_behavior().remove_section(1)
-		ent.get_control_behavior().add_section("clock-legacy")
 		table.insert( storage.clocks, 
 			{
 				entity = ent, 
@@ -246,43 +245,56 @@ local function format_time()
 	return sTime
 end
 
+local function get_section_id(control, clock_name)
+	for i, section in pairs(control.sections) do
+		if section ~= nil then
+			if section.group == clock_name then
+				return section.index
+			end
+		end
+	end
+	return nil
+end
+
+local function reset_clock(control)
+	for i, section in pairs(control.sections) do
+		if section ~= nil then
+			control.remove_section(section.index)
+		end
+	end
+end
+
 local function on_clock_tick(event)
 	for i, clock in pairs(storage.clocks) do
 		if clock.entity.valid then
 			local clock_behavior = clock.entity.get_control_behavior() 
-			local clock_section = clock_behavior.get_section(1) -- clock-legacy
-			params = {
-				{index=1,value={type="virtual",name="signal-clock-gametick"},min=math.floor(game.tick)},
-				{index=2,value={type="virtual",name="signal-clock-day"},min=storage.day},
-				{index=3,value={type="virtual",name="signal-clock-hour"},min=storage.h},
-				{index=4,value={type="virtual",name="signal-clock-minute"},min=storage.m},
-				{index=5,value={type="virtual",name="signal-clock-alwaysday"},min=iif(storage.surface.always_day,1,0)},
-				{index=6,value={type="virtual",name="signal-clock-darkness"},min=math.floor(storage.surface.darkness*100)},
-				{index=7,value={type="virtual",name="signal-clock-lightness"},min=math.floor((1-storage.surface.darkness)*100)},
-			}
-			clock_section.filters = params
-			local clock_counter = 2
+			local clock_section
+			local clock_counter = 1
+			reset_clock(clock_behavior) -- reset state
 			for planet_name, planet in pairs(game.planets) do
+				if planet == nil then goto CONTINUE end
 				local surf = planet.surface
 				if surf == nil then goto CONTINUE end
 				debug_print(planet_name)
 				debug_print(clock_counter)
 				local clock_name = string.format("clock-%s", planet_name)
 				local get_dt = get_planet_time(surf)
-				clock_behavior.remove_section(clock_counter)
-				clock_behavior.add_section(clock_name)
-				clock_section = clock_behavior.get_section(clock_counter)
+				clock_counter = get_section_id(clock_behavior, clock_name)
+				if clock_counter == nil then
+					clock_section = clock_behavior.add_section(clock_name)
+				else
+					clock_section = clock_behavior.get_section(clock_counter)
+				end
 				params = {
-					{index=1,value={type="virtual",name="signal-clock-gametick"},min=math.floor(game.tick)},
-					{index=2,value={type="virtual",name="signal-clock-day"},min=get_dt.day},
-					{index=3,value={type="virtual",name="signal-clock-hour"},min=get_dt.h},
-					{index=4,value={type="virtual",name="signal-clock-minute"},min=get_dt.m},
-					{index=5,value={type="virtual",name="signal-clock-alwaysday"},min=iif(surf.always_day,1,0)},
-					{index=6,value={type="virtual",name="signal-clock-darkness"},min=math.floor(surf.darkness*100)},
-					{index=7,value={type="virtual",name="signal-clock-lightness"},min=math.floor((1-surf.darkness)*100)},
+					{index=1,value={type="virtual",name="signal-clock-gametick", quality="normal"},min=math.floor(game.tick)},
+					{index=2,value={type="virtual",name="signal-clock-day", quality="normal"},min=get_dt.day},
+					{index=3,value={type="virtual",name="signal-clock-hour", quality="normal"},min=get_dt.h},
+					{index=4,value={type="virtual",name="signal-clock-minute", quality="normal"},min=get_dt.m},
+					{index=5,value={type="virtual",name="signal-clock-alwaysday", quality="normal"},min=iif(surf.always_day,1,0)},
+					{index=6,value={type="virtual",name="signal-clock-darkness", quality="normal"},min=math.floor(surf.darkness*100)},
+					{index=7,value={type="virtual",name="signal-clock-lightness", quality="normal"},min=math.floor((1-surf.darkness)*100)},
 				}
 				clock_section.filters = params
-				clock_counter = clock_counter + 1
 				::CONTINUE::
 			end
 		else
