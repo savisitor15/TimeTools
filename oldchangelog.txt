@@ -1,0 +1,178 @@
+---------------------------------------------------------------------------------------------------
+Version: 1.0.0
+  Changes:
+    - Initial release with a simple Time Bar.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.1
+  Changes:
+    - Introduces Clock Combinator and time freeze, new buttons. Adds multiplayer compatibility.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.2
+  Changes:
+    - Adds locale for german (thanks to Apcnc) and french (my own language).
+---------------------------------------------------------------------------------------------------
+Version: 1.0.3
+  Changes:
+    - Change remote interface to set current day and current clock separately.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.4
+  Changes:
+    - Improves multiplayer compatibility. Add a reset to the interface.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.5
+  Changes:
+    - Improves multiplayer compatibility when config changes.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.6
+  Changes:
+    - Memorize last speed for quick speed switching. Release stress on Combinator Clock refresh.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.7
+  Changes:
+    - No more limitation for the clock combinator to be in a logistic network. Can be placed and works everywhere.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.9
+  Changes:
+    - Update always_day if changed by another mod. Add interface frozen.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.11
+  Changes:
+    - Improved gui refresh. Reduced size in the top bar.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.12
+  Changes:
+    - 0.13 compatible (combinator does not work for the moment). rework of initialisation routines. Custom license. New way to approximate day in alwaysday mode.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.13
+  Changes:
+    - (coming next...) clock combinator fix.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.14
+  Changes:
+    - minor fixes
+---------------------------------------------------------------------------------------------------
+Version: 1.0.15
+  Changes:
+    - normalize code to new binbinhfr basic structure, and fix a campaign incompatibility.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.16
+  Changes:
+    - add some migrations (destroy and rebuild bar before 1.0.16), and event player_join
+---------------------------------------------------------------------------------------------------
+Version: 1.0.17
+  Changes:
+    - simplify gui, integrate sprite buttons
+---------------------------------------------------------------------------------------------------
+Version: 1.0.18
+  Changes:
+    - better init of global.day when load existing map
+---------------------------------------------------------------------------------------------------
+Version: 1.0.19
+  Changes:
+    - correct pb of bad alwaysday icon init on brand new map.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.20
+  Changes:
+    - interface allows enable/disable display of clock.
+    - /c remote.call( "timetools", "on" )
+    - /c remote.call( "timetools", "off" )
+---------------------------------------------------------------------------------------------------
+Version: 1.0.21
+  Changes:
+    - corrects a migration version compare mistake
+---------------------------------------------------------------------------------------------------
+Version: 1.0.22
+  Changes:
+    - problem with day icon not correctly initialised in MP, and also time color.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.23
+  Changes:
+    - change right arrow position to avoid missclick when goinf from x8 to x16 and reverse
+---------------------------------------------------------------------------------------------------
+Version: 1.0.24
+  Changes:
+    - when always_day, display an approximation of hour/minute, using game.tick
+---------------------------------------------------------------------------------------------------
+Version: 1.0.25
+  Changes:
+    - better init forces when installing on existing game.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.26
+  Changes:
+    - factorio 0.14 compatible
+---------------------------------------------------------------------------------------------------
+Version: 1.0.27
+  Changes:
+    - adds an "always_day_enabled" option.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.28
+  Changes:
+    - factorio 0.15 compatible
+---------------------------------------------------------------------------------------------------
+Version: 1.0.29
+  Changes:
+    - correction : surface.freeze_daytime is now a boolean...
+---------------------------------------------------------------------------------------------------
+Version: 1.0.32
+  Changes:
+    - factorio 0.17 compatible
+---------------------------------------------------------------------------------------------------
+Version: 1.0.33
+  Changes:
+    - fixed naming
+---------------------------------------------------------------------------------------------------
+Version: 1.0.34
+  Changes:
+    - continuation of original TimeTools
+---------------------------------------------------------------------------------------------------
+Version: 1.0.35
+  Changes:
+    - moved config to be settings per map instead
+---------------------------------------------------------------------------------------------------
+Version: 1.0.36
+  Changes:
+    - Fixed Gui to be more in-line to previous factorio versions
+---------------------------------------------------------------------------------------------------
+Version: 1.18.37
+  Changes:
+    - Only admins may change time
+---------------------------------------------------------------------------------------------------
+Version: 1.18.38
+Date: 19. 07. 2020
+  Translation:
+    - Russian translation done by TheLastEagle
+  Changes:
+    - Added changelog.txt
+---------------------------------------------------------------------------------------------------
+Version: 1.18.39
+Date: 19. 07. 2020
+  Bugfixes:
+    - Minor issue with new format_time() function
+---------------------------------------------------------------------------------------------------
+Version: 2.0.40
+Date: 23. 08. 2020
+  Changes:
+    - Unified the branches
+  Bugfixes:
+    - Fixed bug where admin check was launched for buttons it shouldn't
+---------------------------------------------------------------------------------------------------
+Version: 2.0.41
+Date: 23. 08. 2020
+  Bugfixes:
+    - Fixed migration fault and added defensive code to force rebuild
+---------------------------------------------------------------------------------------------------
+Version: 2.1.42
+Date: 25. 11. 2020
+  Changes:
+    - Updated to 1.1.0 version of factorio
+---------------------------------------------------------------------------------------------------
+Version: 2.1.43
+Date: 29. 11. 2020
+  Changes:
+    - New interface to set time compression eg. /c remote.call( "timetools", "setspeed", 2 )
+---------------------------------------------------------------------------------------------------
+Version: 2.1.44
+Date: 16. 04. 2022
+  Changes:
+    - New Chinese translation by mlzxgzy
+---------------------------------------------------------------------------------------------------

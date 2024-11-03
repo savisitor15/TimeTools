@@ -352,6 +352,18 @@ end
 script.on_nth_tick(settings.global["timetools-combinator-interval"].value, on_tick)
 
 
+local function speed_but_click(event)
+	local player = game.players[event.player_index]
+	if player.admin then
+		-- perform action
+		if game.speed == 1 then game.speed = storage.speed_mem else game.speed = 1 end
+		update_guis()
+	else
+		player.print({"mod-messages.timetools-message-admins-only"})
+	end
+end
+
+script.on_event("timetools-time-key", speed_but_click)
 --------------------------------------------------------------------------------------
 local function on_gui_click(event)
 	local player = game.players[event.player_index]
@@ -388,8 +400,7 @@ local function on_gui_click(event)
 			update_guis()
 
 		elseif event.element.name == "timetools_but_speed" then
-			if game.speed == 1 then game.speed = storage.speed_mem else game.speed = 1 end
-			update_guis()
+			speed_but_click(event)
 		end
 	else
 		player.print({"mod-messages.timetools-message-admins-only"})
